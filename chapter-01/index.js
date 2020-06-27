@@ -1,20 +1,29 @@
-function getUser(callback) {
-    setTimeout(() => {
-        return callback(null, {
-            id: 1,
-            name: 'Lucas',
-            birthday: new Date(),
-        })
-    }, 1000);
+const util = require('util');
+
+const getAddressAsync = util.promisify(getAddress)
+
+function getUser() {
+    return new Promise(function resolvePromise(resolve, reject) {
+        setTimeout(() => {
+            //return reject(new Error('User not found!'))
+            return resolve({
+                id: 1,
+                name: 'Lucas',
+                birthday: new Date(),
+            })
+        }, 1000);
+    })
 };
 
-function getPhone(userId, callback) {
-    setTimeout(() => {
-        return callback(null, {
-            phone: '923233029',
-            ddd: '12'
-        })
-    }, 2000);
+function getPhone(userId) {
+    return new Promise(function resolvePromise(resolve, reject) {
+        setTimeout(() => {
+            return resolve({
+                phone: '923233029',
+                ddd: '12'
+            })
+        }, 2000);
+    });
 };
 
 function getAddress(userId, callback) {
@@ -26,39 +35,65 @@ function getAddress(userId, callback) {
     }, 2000)
 };
 
-function solveUser(error, user) {
-    console.log('user', user)
-}
+const userPromise = getUser()
 
-getUser(function solveUser(error, user) {
-    if (error) {
-        console.log('User not found!')
-        return;
-    };
+userPromise
+    .then((user) => {
+        return getPhone(user.id)
+            .then((phone) => {
+                return {
+                    user: {
+                        id: user.id,
+                        name: user.name
+                    },
+                    phone: phone,
+                }
+            })
+    })
+    .then((res) => {
+        const address = getAddressAsync(res.user.id)
+        return address.then((address) => {
+            return {
+                user: res.user,
+                phone: res.phone,
+                address: address
+            }
+        })
+    })
+    .then((res) => {
+        console.log(`
+            Name: ${res.user.name}
+            Address: ${res.address.street}, ${res.address.number}
+            Phone: (${res.phone.ddd}) ${res.phone.phone}
+        `)
+    })
+    .catch((err) => {
+        console.error('Error', err)
+    })
 
-    getPhone(user.id, function solvePhone(error1, phone) {
-        if (error1) {
-            console.log('User phone not found!')
-            return;
-        };
+//getUser(function resolveUser(error, user) {
+//     if (error) {
+//         console.log('User not found!')
+//         return;
+//     };
 
-        getAddress(user.id, function solveAddress(error2, address) {
-            if (error2) {
-                console.log('User address not found!')
-                return;
-            };
+//     getPhone(user.id, function resolvePhone(error1, phone) {
+//         if (error1) {
+//             console.log('User phone not found!')
+//             return;
+//         };
 
-            console.log(`
-                User: ${user.name},
-                Address: ${address.street}, ${address.number},
-                Phone: (${phone.ddd}) ${phone.phone}
-            `);
-        });
-    });
-});
+//         getAddress(user.id, function resolveAddress(error2, address) {
+//             if (error2) {
+//                 console.log('User address not found!')
+//                 return;
+//             };
 
-const user = getUser(solveUser)
-//const phone = getPhone(user.id)
-//const address = getAddress(user.id)
-//
-//console.log(user, phone, address)
+//             console.log(`
+//                 User: ${user.name},
+//                 Address: ${address.street}, ${address.number},
+//                 Phone: (${phone.ddd}) ${phone.phone}
+//             `);
+//         });
+//     });
+// });
