@@ -1,5 +1,4 @@
 const util = require('util');
-
 const getAddressAsync = util.promisify(getAddress)
 
 function getUser() {
@@ -35,41 +34,67 @@ function getAddress(userId, callback) {
     }, 2000)
 };
 
-const userPromise = getUser()
-
-userPromise
-    .then((user) => {
-        return getPhone(user.id)
-            .then((phone) => {
-                return {
-                    user: {
-                        id: user.id,
-                        name: user.name
-                    },
-                    phone: phone,
-                }
-            })
-    })
-    .then((res) => {
-        const address = getAddressAsync(res.user.id)
-        return address.then((address) => {
-            return {
-                user: res.user,
-                phone: res.phone,
-                address: address
-            }
-        })
-    })
-    .then((res) => {
+main()
+async function main() {
+    try {
+        console.time('promise-time')
+        const user = await getUser()
+        // const phone = await getPhone(user.id)
+        // const address = await getAddressAsync(user.id)
+        const result = await Promise.all([
+            getPhone(user.id),
+            getAddressAsync(user.id)
+        ])
+        const phone = result[0]
+        const address = result[1]
+        console.timeEnd('promise-time')
+        
         console.log(`
-            Name: ${res.user.name}
-            Address: ${res.address.street}, ${res.address.number}
-            Phone: (${res.phone.ddd}) ${res.phone.phone}
-        `)
-    })
-    .catch((err) => {
+            Name: ${user.name}
+            Phone: (${phone.ddd}) ${phone.phone}
+            Address: ${address.street}, ${address.number}
+        `);
+    } catch (err) {
         console.error('Error', err)
-    })
+    };
+};
+
+
+// const userPromise = getUser()
+
+// userPromise
+//     .then((user) => {
+//         return getPhone(user.id)
+//             .then((phone) => {
+//                 return {
+//                     user: {
+//                         id: user.id,
+//                         name: user.name
+//                     },
+//                     phone: phone,
+//                 }
+//             })
+//     })
+//     .then((res) => {
+//         const address = getAddressAsync(res.user.id)
+//         return address.then((address) => {
+//             return {
+//                 user: res.user,
+//                 phone: res.phone,
+//                 address: address
+//             }
+//         })
+//     })
+//     .then((res) => {
+//         console.log(`
+//             Name: ${res.user.name}
+//             Address: ${res.address.street}, ${res.address.number}
+//             Phone: (${res.phone.ddd}) ${res.phone.phone}
+//         `)
+//     })
+//     .catch((err) => {
+//         console.error('Error', err)
+//     })
 
 //getUser(function resolveUser(error, user) {
 //     if (error) {
