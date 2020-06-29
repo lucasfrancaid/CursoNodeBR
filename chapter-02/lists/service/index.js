@@ -8,13 +8,4 @@ async function getPeople(name) {
     return response.data;
 };
 
-getPeople('r2')
-    .then((res) => {
-        console.log('res', res)
-    })
-    .catch((err) => console.log('Error', err)
-    );
-
-module.exports = {
-    getPeople
-}
+module.exports = { getPeople };
