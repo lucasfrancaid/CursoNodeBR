@@ -25,4 +25,10 @@ describe('Suite of Heroes manipulation', () => {
         const [actual] = await database.list(DEFAULT_ITEM_CREATE.id)
         deepEqual(actual, expected)
     })
+
+    it('Should remove a Hero by id, using files', async () => {
+        const expected = true
+        const result = await database.remove(DEFAULT_ITEM_CREATE.id)
+        deepEqual(result, expected);
+    });
 });
