@@ -1,6 +1,6 @@
 const { deepEqual } = require('assert');
 
-const database = require('./database');
+const database = require('../database');
 
 const DEFAULT_ITEM_CREATE = {
     name: 'Flash',
