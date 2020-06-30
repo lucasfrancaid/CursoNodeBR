@@ -50,11 +50,35 @@ class Database {
 
         const data = await this.getFileData()
         const index = data.findIndex(item => item.id === parseInt(id))
+
         if (index === -1) {
             throw Error('Hero not exist')
-        }
+        };
+        
         data.splice(index, 1)
         return await this.writeFile(data)
+    };
+
+    async update(id, modifications) {
+        const data = await this.getFileData()
+        const index = data.findIndex(item => item.id === parseInt(id))
+
+        if (index === -1) {
+            throw Error('Hero not exist')
+        };
+
+        const current = data[index]
+        const updatedHero = {
+            ...current,
+            ...modifications
+        }
+        
+        data.splice(index, 1)
+
+        return await this.writeFile([
+            ...data,
+            updatedHero
+        ]);
     };
 };
 
