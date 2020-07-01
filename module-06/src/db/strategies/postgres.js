@@ -64,12 +64,17 @@ class Postgres extends ICrud {
         return dataValues;
     };
 
-    read(item = {}) {
-        return this._heroes.findAll({ where: item, raw: true })
+    async read(item = {}) {
+        return await this._heroes.findAll({ where: item, raw: true })
     };
 
     async update(id, item) {
         return await this._heroes.update(item, { where: { id: id } })
+    };
+
+    async delete(id) {
+        const query = id ? { id } : {}
+        return await this._heroes.destroy({ where: query })
     };
 };
 

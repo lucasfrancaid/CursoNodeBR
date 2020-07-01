@@ -11,15 +11,14 @@ const MOCK_HERO_CREATE = {
 };
 
 const MOCK_HERO_UPDATE = {
-    name: 'Joker',
-    skill: 'Explosions'
+    name: 'Superman',
+    skill: 'Power'
 };
 
 describe('Postgres strategy', function () {
     this.timeout(Infinity);
     this.beforeAll(async function () {
         await context.connect()
-        await context.create(MOCK_HERO_UPDATE)
     });
 
     it('Postgres Connection', async function () {
@@ -40,10 +39,16 @@ describe('Postgres strategy', function () {
     });
 
     it('Should update a Hero by id', async function () {
-        const [itemToUpdate] = await context.read({ name: MOCK_HERO_UPDATE.name })        
-        const itemWithUpdate = { ...MOCK_HERO_UPDATE, name: 'Arlequina' }
-        const [result] = await context.update(itemToUpdate.id, itemWithUpdate)
+        const [itemToUpdate] = await context.read({ name: MOCK_HERO_CREATE.name })
+        const [result] = await context.update(itemToUpdate.id, MOCK_HERO_UPDATE)
         const [updatedItem] = result === 1 ? await context.read({ id: itemToUpdate.id }) : null
-        assert.deepEqual(updatedItem.name, itemWithUpdate.name)
+        if (updatedItem) delete updatedItem.id
+        assert.deepEqual(updatedItem, MOCK_HERO_UPDATE)
+    });
+
+    it('Should delete a Hero by id', async function () {
+        const [item] = await context.read({ name: MOCK_HERO_UPDATE.name })
+        const result = await context.delete(item.id)
+        assert.deepEqual(result, 1)
     });
 });
