@@ -484,3 +484,157 @@ contextPostgres.create();
 #
 
 ## Introdução ao Postgres e Bancos Relacionais - Módulo 06
+
+### Bancos Relacionais:
+- Estruturas Fixas
+- Chaves estrangeiras e constraints
+- Consistente
+
+### Operadores e conexão:
+```sql
+DROP TABLE IF EXISTS TB_HEROES; 
+CREATE TABLE TB_HEROES (
+    ID INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+    NAME TEXT NOT NULL,
+    SKILL TEXT NOT NULL
+)
+
+--create
+INSERT INTO TB_HEROES (NAME, SKILL)
+VALUES
+    ('Flash', 'Speed'),
+    ('Batman', 'Money'),
+    ('Superman', 'Supervision')
+
+--read
+SELECT * FROM TB_HEROES;
+SELECT * FROM TB_HEROES WHERE NAME = "Flash";
+
+--update
+UPDATE TB_HEROES
+SET NAME = 'Goku', SKILL = 'Super sayajin'
+WHERE ID = 1;
+
+--delete
+DELETE FROM TB_HEROES WHERE ID = 2;
+```
+
+### Trabalhando com Sequelize:
+```bash
+$ npm install sequelize pg-hstore pg
+```
+
+### Configurando a conexão com o Postgres:
+```js
+const Sequelize = require('sequelize');
+
+const ICrud = require('./interfaces/interfaceCrud');
+
+class Postgres extends ICrud {
+    constructor() {
+        super()
+        this._driver = null
+        this._heroes = null
+        this._connect()
+    };
+
+    async isConnected() {
+        try {
+            await this._driver.authenticate()
+            return true;
+        } catch (error) {
+            console.log('Fail!', error)
+            return false;
+        };
+    };
+
+    async defineModel() {
+        this._heroes = driver.define('heroes', {
+            id: {
+                type: Sequelize.INTEGER,
+                required: true,
+                primaryKey: true,
+                autoIncrement: true
+            },
+            name: {
+                type: Sequelize.STRING,
+                required: true
+            },
+            skill: {
+                type: Sequelize.STRING,
+                required: true
+            }
+        }, {
+            tableName: 'TB_HEROES',
+            freezeTableName: false,
+            timestamps: false
+        });
+    
+        await this._heroes.sync()
+    };
+
+    _connect() {
+        this._driver = new Sequelize(
+            'heroes',
+            'lucasfranca',
+            'lucasfranca',
+            {
+                host: 'localhost',
+                dialect: 'postgres',
+                quoteIdentifiers: false
+            }
+        );
+    };
+    ...
+};
+```
+
+### Criando o teste da conexão:
+```js
+const assert = require('assert');
+
+const Postgres = require('../db/strategies/postgres');
+const Context = require('../db/strategies/base/contextStrategy');
+
+const context = new Context(new Postgres())
+
+describe('Postgres strategy', function () {
+    this.timeout(Infinity);
+
+    it('Postgres Connection', async function () {
+        const result = await context.isConnected()
+        assert.equal(result, true)
+    });
+});
+```
+
+### Cadastrando Heróis - CREATE:
+```js
+async create(item) {
+    const { dataValues } = await this._heroes.create(item)
+    return dataValues;
+};
+```
+
+### Listando Heróis - READ:
+```js
+read(item = {}) {
+    return this._heroes.findAll({ where: item, raw: true })
+};
+```
+
+### Atualizando Heróis - UPDATE:
+```js
+async update(id, item) {
+    return await this._heroes.update(item, { where: { id: id } })
+};
+```
+
+### Removendo Heróis - DELETE:
+```js
+async delete(id) {
+    const query = id ? { id } : {}
+    return await this._heroes.destroy({ where: query })
+};
+```
+
