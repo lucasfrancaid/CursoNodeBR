@@ -9,6 +9,7 @@
 03. <a href="#introdução-a-desenvolvimento-de-testes-automatizados-em-javascript---módulo-03"> Introdução a desenvolvimento de testes automatizados em Javascript </a>
 04. <a href="#nodejs-além-da-web---criando-ferramentas-de-linha-de-comando---módulo-04"> Node.js além da Web - Criando ferramentas de linha de comando </a>
 05. <a href="#bancos-de-dados---nosso-projeto-multi-banco-de-dados---módulo-05"> Bancos de Dados - Nosso projeto Multi-banco de dados </a>
+06. <a href="#introdução-ao-postgres-e-bancos-relacionais---módulo-06"> Introdução ao Postgres e Bancos Relacionais </a>
 
 #
 
@@ -444,4 +445,42 @@ async function main() {
 
 ## Bancos de Dados - Nosso projeto Multi-banco de dados - Módulo 05
 
+### Trabalhando com o Design Pattern Strategy para Multi DataSources:
+- Foram criados os bancos de dados utilizando docker (+infos em module-05/README.md)
+- Banco de Dados NoSQL: MongoDB
+- Banco de Dados SQL: Postgres
 
+
+```bash
+.
+├── package.json
+├── README.md
+└── src
+    ├── db
+    │   └── strategies
+    │       ├── base
+    │       │   └── contextStrategy.js
+    │       ├── interfaces
+    │       │   └── interfaceCrud.js
+    │       ├── mongodb.js
+    │       └── postgres.js
+    └── index.js
+```
+
+### Chamada de contexto de banco de dados usando strategy:
+```js
+const ContextStrategy = require('./db/strategies/base/contextStrategy');
+
+const MongoDB = require('./db/strategies/mongodb');
+const Postgres = require('./db/strategies/postgres');
+
+const contextMongo = new ContextStrategy(new MongoDB());
+contextMongo.create();
+
+const contextPostgres = new ContextStrategy(new Postgres());
+contextPostgres.create();
+```
+
+#
+
+## Introdução ao Postgres e Bancos Relacionais - Módulo 06
