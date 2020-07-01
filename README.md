@@ -446,7 +446,7 @@ async function main() {
 ## Bancos de Dados - Nosso projeto Multi-banco de dados - Módulo 05
 
 ### Trabalhando com o Design Pattern Strategy para Multi DataSources:
-- Foram criados os bancos de dados utilizando docker (+infos em module-05/README.md)
+- Foram criados os bancos de dados utilizando docker (<a href="module-05/README.md">Veja aqui</a>)
 - Banco de Dados NoSQL: MongoDB
 - Banco de Dados SQL: Postgres
 
