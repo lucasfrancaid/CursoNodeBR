@@ -26,4 +26,10 @@ describe('Postgres strategy', function () {
         delete result.id
         assert.deepEqual(result, MOCK_HERO_CREATE)
     });
+
+    it('Should read a Hero by name', async function () {
+        const [result] = await context.read({ name: MOCK_HERO_CREATE.name })
+        delete result.id
+        assert.deepEqual(result, MOCK_HERO_CREATE)
+    });
 });
