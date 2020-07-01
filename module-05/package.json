@@ -1,0 +1,12 @@
+{
+  "name": "module-05",
+  "version": "1.0.0",
+  "description": "## Postgres ```bash $ sudo docker run \\     --name postgres_nodebr \\     -e POSTGRES_USER=lucasfranca \\     -e POSTGRES_PASSWORD=lucasfranca \\     -e POSTGRES_DB=heroes \\     -p 5432:5432 \\     -d \\     postgres ```",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
