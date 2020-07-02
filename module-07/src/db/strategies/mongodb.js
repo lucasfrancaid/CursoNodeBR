@@ -57,14 +57,12 @@ class MongoDB extends ICrud {
 
         this._driver = Mongoose.connection
         this._driver.once('open', () => console.log('Running database!'))
+
+        this.defineModel()
     };
 
-    async create(item) {
-        const resultCreate = await model.create({
-            name: 'Batman',
-            skill: 'Money'
-        })
-        console.log('result', resultCreate)
+    create(item) {
+        return this._heroes.create(item)
     };
 };
 
