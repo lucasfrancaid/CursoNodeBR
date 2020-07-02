@@ -43,4 +43,9 @@ describe('MongoDB strategy', function () {
         const result = await context.update(MOCK_HERO_ID, MOCK_HERO_UPDATE)
         assert.deepEqual(result.nModified, 1)
     });
+
+    it('Should delete a Hero by id', async () => {
+        const result = await context.delete(MOCK_HERO_ID)
+        assert.deepEqual(result.n, 1)
+    });
 });
