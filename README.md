@@ -11,6 +11,7 @@
 05. <a href="#bancos-de-dados---nosso-projeto-multi-banco-de-dados---módulo-05"> Bancos de Dados - Nosso projeto Multi-banco de dados </a>
 06. <a href="#introdução-ao-postgres-e-bancos-relacionais---módulo-06"> Introdução ao Postgres e Bancos Relacionais </a>
 07. <a href="#introdução-ao-mongodb-e-bancos-não-relacionais-nosql---módulo-7"> Introdução ao MongoDB e Bancos Não-Relacionais (NoSQL) </a>
+08. <a href="#refatorando-nosso-projeto-para-bancos-de-dados-multi-schemas---módulo-8"> Refatorando nosso projeto para bancos de dados multi-schemas </a>
 
 #
 
@@ -825,4 +826,9 @@ delete(id) {
     return this._heroes.deleteOne({ _id: id })
 };
 ```
+
+#
+
+## Refatorando nosso projeto para bancos de dados multi-schemas - Módulo 8
+
 
