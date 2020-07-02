@@ -10,7 +10,14 @@ const MOCK_HERO_CREATE = {
     skill: 'Lasso of Truth'
 };
 
+let MOCK_HERO_ID;
+
+const MOCK_HERO_UPDATE = {
+    name: 'Superman',
+};
+
 describe('MongoDB strategy', function () {
+    // this.timeout(Infinity);
     this.beforeAll(async () => {
         await context.connect()
     });
@@ -22,12 +29,18 @@ describe('MongoDB strategy', function () {
     });
 
     it('Should create a Hero', async () => {
-        const { name, skill } = await context.create(MOCK_HERO_CREATE)
+        const { _id, name, skill } = await context.create(MOCK_HERO_CREATE)
+        MOCK_HERO_ID = _id
         assert.deepEqual({ name, skill }, MOCK_HERO_CREATE)
     });
 
     it('Should read a Hero by name', async () => {
         const [{ name, skill }] = await context.read({ name: MOCK_HERO_CREATE.name, skill: MOCK_HERO_CREATE.skill })
         assert.deepEqual({ name, skill }, MOCK_HERO_CREATE)
+    });
+
+    it('Should update a Hero by id', async () => {
+        const result = await context.update(MOCK_HERO_ID, MOCK_HERO_UPDATE)
+        assert.deepEqual(result.nModified, 1)
     });
 });
