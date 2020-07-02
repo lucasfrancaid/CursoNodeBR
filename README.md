@@ -831,4 +831,64 @@ delete(id) {
 
 ## Refatorando nosso projeto para bancos de dados multi-schemas - Módulo 8
 
+### Refatorando a estratégia de MongoDB para multi-schemas:
+```bash
+.
+├── package.json
+├── package-lock.json
+├── README.md
+└── src
+    ├── db
+    │   └── strategies
+    │       ├── base
+    │       │   └── contextStrategy.js
+    │       ├── interfaces
+    │       │   └── interfaceCrud.js
+    │       ├── mongodb
+    │       │   ├── index.js
+    │       │   └── schemas
+    │       │       └── heroesSchema.js
+    │       └── postgres.js
+    ├── index.js
+    ├── mongodbExample.js
+    ├── postgresExample.js
+    ├── scripts
+    │   ├── mongodb.js
+    │   └── postgres.sql
+    └── tests
+        ├── mongodbStrategy.test.js
+        └── postgresStrategy.test.js
+```
+
+### Refatorando a estratégia de Postgres para multi-schemas:
+```bash
+.
+├── package.json
+├── package-lock.json
+├── README.md
+└── src
+    ├── contextExample.js
+    ├── db
+    │   └── strategies
+    │       ├── base
+    │       │   └── contextStrategy.js
+    │       ├── interfaces
+    │       │   └── interfaceCrud.js
+    │       ├── mongodb
+    │       │   ├── index.js
+    │       │   └── schemas
+    │       │       └── heroesSchema.js
+    │       └── postgres
+    │           ├── index.js
+    │           └── schemas
+    │               └── heroesSchema.js
+    ├── mongodbExample.js
+    ├── postgresExample.js
+    ├── scripts
+    │   ├── mongodb.js
+    │   └── postgres.sql
+    └── tests
+        ├── mongodbStrategy.test.js
+        └── postgresStrategy.test.js
+```
 
