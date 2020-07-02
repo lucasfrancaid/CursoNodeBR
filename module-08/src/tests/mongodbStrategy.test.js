@@ -3,7 +3,7 @@ const assert = require('assert');
 const MongoDB = require('../db/strategies/mongodb');
 const Context = require('../db/strategies/base/contextStrategy');
 
-const HeroeSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
+const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
 
 let context;
 
@@ -21,7 +21,7 @@ const MOCK_HERO_UPDATE = {
 describe('MongoDB strategy', function () {
     this.beforeAll(async () => {
         const connection = MongoDB.connect()
-        context = new Context(new MongoDB(connection, HeroeSchema))
+        context = new Context(new MongoDB(connection, HeroesSchema))
     });
 
     it('MongoDB Connection', async () => {
