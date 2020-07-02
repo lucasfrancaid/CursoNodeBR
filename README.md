@@ -10,6 +10,7 @@
 04. <a href="#nodejs-além-da-web---criando-ferramentas-de-linha-de-comando---módulo-04"> Node.js além da Web - Criando ferramentas de linha de comando </a>
 05. <a href="#bancos-de-dados---nosso-projeto-multi-banco-de-dados---módulo-05"> Bancos de Dados - Nosso projeto Multi-banco de dados </a>
 06. <a href="#introdução-ao-postgres-e-bancos-relacionais---módulo-06"> Introdução ao Postgres e Bancos Relacionais </a>
+07. <a href="#introdução-ao-mongodb-e-bancos-não-relacionais-nosql---módulo-7"> Introdução ao MongoDB e Bancos Não-Relacionais (NoSQL) </a>
 
 #
 
@@ -486,7 +487,7 @@ contextPostgres.create();
 ## Introdução ao Postgres e Bancos Relacionais - Módulo 06
 
 ### Bancos Relacionais:
-- Estruturas Fixas
+- Estruturas fixas
 - Chaves estrangeiras e constraints
 - Consistente
 
@@ -635,6 +636,193 @@ async update(id, item) {
 async delete(id) {
     const query = id ? { id } : {}
     return await this._heroes.destroy({ where: query })
+};
+```
+
+#
+
+## Introdução ao MongoDB e Bancos Não-Relacionais (NoSQL) - Módulo 7
+
+### Bancos Não Relacionais:
+- Estruturas dinâmicas e flexíveis
+- Lembra programação orientada a objetos
+- Eventualmente consistente
+
+### Operadores e conexão:
+```bash
+$ sudo docker exec -it mongodb_nodebr \
+    mongo -u lucasfranca -p lucasfranca --authenticationDatabase heroes
+> show dbs
+> use heroes
+> show collections
+```
+### Executando comandos para o MongoDB via terminal:
+```js
+// Finding documents
+db.heroes.find()
+
+// Finding with better format
+db.heroes.find().pretty()
+
+// MongoDB allows run javascript
+for (let i = 0; i <= 10; i++) {
+    db.heroes.insert({
+        name: `Clone-${i}`,
+        skill: 'Speed',
+        birthday: '1996-03-10'
+    })
+};
+
+// Count documents in database
+db.heroes.count()
+
+// Return the first document found
+db.heroes.findOne()
+
+// Return a limit of 5 document and sort by desc name
+db.heroes.find().limit(5).sort({ name: -1 })
+
+/*-------MongoDB Methods-------*/
+
+// create
+db.heroes.insert({
+    name: 'Flash',
+    skill: 'Speed',
+    birthday: '1996-03-10'
+})
+
+// read
+db.heroes.find()
+
+// update
+db.heroes.update(
+    { _id: ObjectId("5efdf028459421617399d408") },
+    { $set: { name: 'Batman' } }
+)
+
+// delete
+db.heroes.remove({}) // remove all
+db.heroes.remove({ name: 'Clone-10' }) // remove with where
+```
+
+### Trablhando com Mongoose:
+```bash
+npm install mongoose
+```
+
+### Configurando a conexão com o MongoDB:
+```js
+const Mongoose = require('mongoose');
+
+const ICrud = require('./interfaces/interfaceCrud');
+
+const STATUS = {
+    0: 'Disconnected',
+    1: 'Connected',
+    2: 'Connecting',
+    3: 'Disconnecting',
+};
+
+class MongoDB extends ICrud {
+    constructor() {
+        super()
+        this._driver = null
+        this._heroes = null
+    };
+
+    async isConnected() {
+        const state = STATUS[this._driver.readyState]
+        if (state !== 'Connecting') return state;
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        return STATUS[this._driver.readyState]
+    };
+
+    defineModel() {
+        const schema = new Mongoose.Schema({
+            name: {
+                type: String,
+                required: true
+            },
+            skill: {
+                type: String,
+                required: true
+            },
+            created_at: {
+                type: Date,
+                default: new Date()
+            }
+        });
+        
+        this._heroes = Mongoose.model('heroes', schema)
+    };
+
+    connect() {
+        Mongoose.connect(
+            'mongodb://lucasfranca:lucasfranca@localhost:27017/heroes',
+            { 
+                useNewUrlParser: true,
+                useUnifiedTopology: true,
+            },
+            (error) => {
+                if (!error) return;
+                console.log('Connection failed!', error)
+            },
+        );
+
+        this._driver = Mongoose.connection
+        this._driver.once('open', () => console.log('Running database!'))
+    };
+    ...
+};
+```
+
+### Criando o teste da conexão:
+```js
+const assert = require('assert');
+
+const MongoDB = require('../db/strategies/mongodb');
+const Context = require('../db/strategies/base/contextStrategy');
+
+const context = new Context(new MongoDB())
+
+describe('MongoDB strategy', function () {
+    this.beforeAll(async function () {
+        await context.connect()
+    });
+
+    it('MongoDB Connection', async function () {
+        const result = await context.isConnected()
+        const expected = 'Connected'
+        assert.equal(result, expected)
+    });
+});
+```
+
+### Cadastrando Heróis - CREATE:
+```js
+create(item) {
+    return this._heroes.create(item)
+};
+```
+
+### Listando Heróis - READ:
+```js
+read(item, skip = 0, limit = 10) {
+    return this._heroes.find(item).skip(skip).limit(limit)
+};
+```
+
+### Atualizando Heróis - UPDATE:
+```js
+update(id, item) {
+    return this._heroes.updateOne({ _id: id }, item)
+};
+```
+
+### Removendo Heróis - DELETE:
+```js
+delete(id) {
+    return this._heroes.deleteOne({ _id: id })
 };
 ```
 
