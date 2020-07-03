@@ -10,7 +10,10 @@
 * [MongoDB](https://www.mongodb.com/)
 * [Sequelize](https://sequelize.org/)
 * [Mongoose](https://mongoosejs.com/)
-* [Hapi.js](https://hapi.dev/)
+* [Hapi](https://hapi.dev/)
+* [Joi](https://www.npmjs.com/package/joi)
+* [Boom](https://www.npmjs.com/package/boom)
+
 
 ## Sumário:
 
