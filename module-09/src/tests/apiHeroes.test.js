@@ -6,6 +6,11 @@ const MOCK_HERO_CREATE = {
     skill: 'Money'
 };
 
+const MOCK_HERO_UPDATE = {
+    name: 'Captain America',
+    skill: 'Shield'
+};
+
 let MOCK_ID;
 
 let app;
@@ -76,5 +81,16 @@ describe.only('Suite of tests API Heroes', function () {
         MOCK_ID = _id
         assert.ok(result.statusCode === 200)
         assert.deepEqual({ name, skill }, MOCK_HERO_CREATE)
+    });
+
+    it('Update - PATCH /heroes/:id - should update a hero by id', async () => {
+        const result = await app.inject({
+            method: 'PATCH',
+            url: `/heroes/${MOCK_ID}`,
+            payload: MOCK_HERO_UPDATE
+        })
+        const payload = JSON.parse(result.payload)
+        assert.ok(result.statusCode === 200)
+        assert.ok(payload.message === 'Hero was updated!')
     });
 });

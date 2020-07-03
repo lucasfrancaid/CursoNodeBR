@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const BaseRoute = require('./base/baseRoute');
+const { request } = require('http');
 
 const failAction = (request, headers, error) => {
     throw error;
@@ -62,6 +63,41 @@ class HeroesRoutes extends BaseRoute {
                 }
             }
         };
+    };
+
+    update() {
+        return {
+            path: '/heroes/{id}',
+            method: 'PATCH',
+            config: {
+                validate: {
+                    failAction,
+                    params: {
+                        id: Joi.string().required()
+                    },
+                    payload: {
+                        name: Joi.string().min(3).max(100),
+                        skill: Joi.string().min(2).max(20)
+                    }
+                }
+            },
+            handler: async (request) => {
+                try {
+                    const { id } = request.params
+                    const stringData = JSON.stringify(request.payload)
+                    const data = JSON.parse(stringData)
+                    
+                    const result = await this.db.update(id, data)
+
+                    if (result.nModified !== 1) return { statusCode: result.statusCode, message: 'Hero could not updated!' };
+                    return { statusCode: result.statusCode, message: 'Hero was updated!' }
+
+                } catch (error) {
+                    console.error('Error', error)
+                    return 'Internal server error!'
+                }
+            }
+        }
     };
 };
 
