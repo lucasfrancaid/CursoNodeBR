@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const Boom = require('boom');
+const Joi = require('@hapi/joi');
+const Boom = require('@hapi/boom');
 
 const BaseRoute = require('./base/baseRoute');
 
@@ -18,13 +18,16 @@ class HeroesRoutes extends BaseRoute {
             path: '/heroes',
             method: 'GET',
             config: {
+                tags: ['api'],
+                description: 'Should list Heroes',
+                notes: 'Can page results and filter by name',
                 validate: {
                     failAction,
-                    query: {
+                    query: Joi.object({
                         skip: Joi.number().integer().default(0),
                         limit: Joi.number().integer().default(10),
                         name: Joi.string().min(2).max(50)
-                    }
+                    })
                 }
             },
             handler: (request, headers) => {
@@ -45,13 +48,16 @@ class HeroesRoutes extends BaseRoute {
             path: '/heroes',
             method: 'POST',
             config: {
+                tags: ['api'],
+                description: 'Should create Hero',
+                notes: 'Should create a Hero with name and skill',
                 validate: {
                     failAction,
-                    payload: {
-                        name: Joi.string().required().min(3).max(100),
-                        skill: Joi.string().required().min(2).max(20)
+                    payload: Joi.object({
+                            name: Joi.string().required().min(3).max(100),
+                            skill: Joi.string().required().min(2).max(20)
+                        })
                     }
-                }
             },
             handler: async (request) => {
                 try {
@@ -70,15 +76,18 @@ class HeroesRoutes extends BaseRoute {
             path: '/heroes/{id}',
             method: 'PATCH',
             config: {
+                tags: ['api'],
+                description: 'Should update a Hero by id',
+                notes: 'Can update any field',
                 validate: {
                     failAction,
-                    params: {
+                    params: Joi.object({
                         id: Joi.string().required()
-                    },
-                    payload: {
+                    }),
+                    payload: Joi.object({
                         name: Joi.string().min(3).max(100),
                         skill: Joi.string().min(2).max(20)
-                    }
+                    })
                 }
             },
             handler: async (request) => {
@@ -105,11 +114,14 @@ class HeroesRoutes extends BaseRoute {
             path: '/heroes/{id}',
             method: 'DELETE',
             config: {
+                tags: ['api'],
+                description: 'Should delete a Hero by id',
+                notes: 'The id should be valid',
                 validate: {
                     failAction,
-                    params: {
+                    params: Joi.object({
                         id: Joi.string().required()
-                    }
+                    })
                 }
             },
             handler: async (request) => {

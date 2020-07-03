@@ -1,4 +1,8 @@
-const Hapi = require('hapi');
+const Hapi = require('@hapi/hapi');
+const Inert = require('@hapi/inert')
+const Vision = require('@hapi/vision');
+const HapiSwagger = require('hapi-swagger');
+
 
 const Context = require('../db/strategies/base/contextStrategy');
 const MongoDB = require('../db/strategies/mongodb');
@@ -17,9 +21,25 @@ async function main() {
     const connection = MongoDB.connect()
     const context = new Context(new MongoDB(connection, HeroesSchema))
 
-    app.route([
-        ...mapRoutes(new HeroesRoutes(context), HeroesRoutes.methods())
-    ])
+    const swaggerOptions = {
+        info: {
+            title: 'API Heroes - #CursoNodeBR',
+            version: 'v1.0'
+        }
+    };
+
+    await app.register([
+        Inert,
+        Vision,
+        {
+            plugin: HapiSwagger,
+            options: swaggerOptions
+        }
+    ]);
+
+    app.route(
+        mapRoutes(new HeroesRoutes(context), HeroesRoutes.methods())
+    );
 
     await app.start()
     console.log('Listening on port', app.info.port)

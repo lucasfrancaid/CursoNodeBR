@@ -4,21 +4,20 @@ const MongoDB = require('../db/strategies/mongodb');
 const Context = require('../db/strategies/base/contextStrategy');
 const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
 
-let context;
-
 const MOCK_HERO_CREATE = {
     name: 'Wonder Woman',
     skill: 'Lasso of Truth'
 };
 
-let MOCK_HERO_ID;
-
 const MOCK_HERO_UPDATE = {
     name: 'Superman',
 };
 
+let MOCK_HERO_ID;
+let context;
+
 describe('MongoDB strategy', function () {
-    this.beforeAll(async () => {
+    this.beforeAll(() => {
         const connection = MongoDB.connect()
         context = new Context(new MongoDB(connection, HeroesSchema))
     });

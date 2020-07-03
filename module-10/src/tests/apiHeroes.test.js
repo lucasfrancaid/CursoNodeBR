@@ -12,7 +12,6 @@ const MOCK_HERO_UPDATE = {
 };
 
 let MOCK_ID;
-
 let app;
 
 describe('Suite of tests API Heroes', function () {
