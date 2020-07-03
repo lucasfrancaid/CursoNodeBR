@@ -1,6 +1,13 @@
 const assert = require('assert');
 const api = require('../api');
 
+const MOCK_HERO_CREATE = {
+    name: 'Iron Man',
+    skill: 'Money'
+};
+
+let MOCK_ID;
+
 let app;
 
 describe.only('Suite of tests API Heroes', function () {
@@ -8,7 +15,7 @@ describe.only('Suite of tests API Heroes', function () {
         app = await api
     });
 
-    it('List /heroes', async () => {
+    it('List - GET /heroes', async () => {
         const result = await app.inject({
             method: 'GET',
             url: '/heroes?skip=0&limit=10'
@@ -21,7 +28,7 @@ describe.only('Suite of tests API Heroes', function () {
         assert.ok(Array.isArray(data))
     });
 
-    it('List /heroes - should return only 3 items', async () => {
+    it('List - GET /heroes - should return only 3 items', async () => {
         const LIMIT = 3
         const result = await app.inject({
             method: 'GET',
@@ -35,7 +42,7 @@ describe.only('Suite of tests API Heroes', function () {
         assert.ok(data.length === LIMIT)
     });
 
-    it('List /heroes - should return error by incorrect limit', async () => {
+    it('List - GET /heroes - should return error by incorrect limit', async () => {
         const LIMIT = 'AEIOU'
         const result = await app.inject({
             method: 'GET',
@@ -44,7 +51,7 @@ describe.only('Suite of tests API Heroes', function () {
         assert.deepEqual(result.statusCode, 400)
     });
 
-    it('List /heroes - should filter an item', async () => {
+    it('List - GET /heroes - should filter an item', async () => {
         const LIMIT = 5
         const NAME = 'Batman'
         const result = await app.inject({
@@ -57,5 +64,17 @@ describe.only('Suite of tests API Heroes', function () {
 
         assert.deepEqual(statusCode, 200)
         assert.deepEqual(data[0].name, NAME)
+    });
+
+    it('Create - POST /heroes - should create a hero', async () => {
+        const result = await app.inject({
+            method: 'POST',
+            url: '/heroes',
+            payload: MOCK_HERO_CREATE
+        })
+        const { _id, name, skill } = JSON.parse(result.payload)
+        MOCK_ID = _id
+        assert.ok(result.statusCode === 200)
+        assert.deepEqual({ name, skill }, MOCK_HERO_CREATE)
     });
 });

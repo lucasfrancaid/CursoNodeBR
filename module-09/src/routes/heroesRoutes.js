@@ -2,6 +2,10 @@ const Joi = require('joi');
 
 const BaseRoute = require('./base/baseRoute');
 
+const failAction = (request, headers, error) => {
+    throw error;
+};
+
 class HeroesRoutes extends BaseRoute {
     constructor(db) {
         super()
@@ -14,9 +18,7 @@ class HeroesRoutes extends BaseRoute {
             method: 'GET',
             config: {
                 validate: {
-                    failAction: (request, headers, error) => {
-                        throw error;
-                    },
+                    failAction,
                     query: {
                         skip: Joi.number().integer().default(0),
                         limit: Joi.number().integer().default(10),
@@ -32,6 +34,31 @@ class HeroesRoutes extends BaseRoute {
                 } catch (error) {
                     console.error('Error', error)
                     return 'Intern server error!'
+                }
+            }
+        };
+    };
+
+    create() {
+        return {
+            path: '/heroes',
+            method: 'POST',
+            config: {
+                validate: {
+                    failAction,
+                    payload: {
+                        name: Joi.string().required().min(3).max(100),
+                        skill: Joi.string().required().min(2).max(20)
+                    }
+                }
+            },
+            handler: async (request) => {
+                try {
+                    const { name, skill } = request.payload
+                    return await this.db.create({ name, skill })
+                } catch (error) {
+                    console.error('Error', error)
+                    return 'Internal server error!'
                 }
             }
         };
