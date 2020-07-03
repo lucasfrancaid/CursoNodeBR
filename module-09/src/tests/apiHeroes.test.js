@@ -15,7 +15,7 @@ let MOCK_ID;
 
 let app;
 
-describe.only('Suite of tests API Heroes', function () {
+describe('Suite of tests API Heroes', function () {
     this.beforeAll(async () => {
         app = await api
     });
