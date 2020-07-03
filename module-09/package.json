@@ -1,0 +1,24 @@
+{
+  "name": "module-09",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha src/tests/*test.js",
+    "test:watch": "mocha src/tests/*test.js -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hapi": "^18.1.0",
+    "joi": "^14.3.1",
+    "mongoose": "^5.9.21",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.2.4"
+  },
+  "devDependencies": {
+    "mocha": "^8.0.1"
+  }
+}
