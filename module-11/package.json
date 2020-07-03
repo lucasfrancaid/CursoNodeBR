@@ -1,0 +1,30 @@
+{
+  "name": "module-11",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha src/tests/*test.js",
+    "test:watch": "mocha src/tests/*test.js -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/boom": "^9.1.0",
+    "@hapi/hapi": "^19.1.1",
+    "@hapi/inert": "^6.0.1",
+    "@hapi/joi": "^17.1.1",
+    "@hapi/vision": "^6.0.0",
+    "hapi-auth-jwt2": "^10.1.0",
+    "hapi-swagger": "^13.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.21",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.2.4"
+  },
+  "devDependencies": {
+    "mocha": "^8.0.1"
+  }
+}
