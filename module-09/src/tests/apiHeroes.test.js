@@ -3,7 +3,7 @@ const api = require('../api');
 
 let app;
 
-describe('Suite of tests API Heroes', function () {
+describe.only('Suite of tests API Heroes', function () {
     this.beforeAll(async () => {
         app = await api
     });
@@ -41,7 +41,7 @@ describe('Suite of tests API Heroes', function () {
             method: 'GET',
             url: `/heroes?skip=0&limit=${LIMIT}`
         })
-        assert.deepEqual(result.payload, 'Intern server error!')
+        assert.deepEqual(result.statusCode, 400)
     });
 
     it('List /heroes - should filter an item', async () => {
