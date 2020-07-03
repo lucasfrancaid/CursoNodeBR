@@ -93,4 +93,14 @@ describe.only('Suite of tests API Heroes', function () {
         assert.ok(result.statusCode === 200)
         assert.ok(payload.message === 'Hero was updated!')
     });
+
+    it('Delete - DELETE /heroes/:id - should delete a hero by id', async () => {
+        const result = await app.inject({
+            method: 'DELETE',
+            url: `/heroes/${MOCK_ID}`,
+        })
+        const payload = JSON.parse(result.payload)
+        assert.ok(result.statusCode === 200)
+        assert.ok(payload.message === 'Hero was deleted!')
+    });
 });

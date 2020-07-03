@@ -97,7 +97,35 @@ class HeroesRoutes extends BaseRoute {
                     return 'Internal server error!'
                 }
             }
-        }
+        };
+    };
+
+    delete() {
+        return {
+            path: '/heroes/{id}',
+            method: 'DELETE',
+            config: {
+                validate: {
+                    failAction,
+                    params: {
+                        id: Joi.string().required()
+                    }
+                }
+            },
+            handler: async (request) => {
+                try {
+                    const { id } = request.params
+                    const result = await this.db.delete(id)
+
+                    if (result.n !== 1) return { statusCode: result.statusCode, message: 'Hero could not deleted!' };
+                    return { statusCode: result.statusCode, message: 'Hero was deleted!' }
+
+                } catch (error) {
+                    console.error('Error', error)
+                    return 'Internal server error!'
+                }
+            }
+        };
     };
 };
 
