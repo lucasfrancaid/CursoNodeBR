@@ -11,8 +11,11 @@
 * [Sequelize](https://sequelize.org/)
 * [Mongoose](https://mongoosejs.com/)
 * [Hapi](https://hapi.dev/)
-* [Joi](https://www.npmjs.com/package/joi)
-* [Boom](https://www.npmjs.com/package/boom)
+* [Joi](https://hapi.dev/module/joi/)
+* [Boom](https://hapi.dev/module/boom/)
+* [Vision](https://hapi.dev/module/vision/)
+* [Inert](https://hapi.dev/module/inert/)
+* [Swagger](https://www.npmjs.com/package/hapi-swagger)
 
 
 ## Sumário:
@@ -724,7 +727,7 @@ db.heroes.remove({ name: 'Clone-10' }) // remove with where
 
 ### Trablhando com Mongoose:
 ```bash
-npm install mongoose
+$ npm install mongoose
 ```
 
 ### Configurando a conexão com o MongoDB:
@@ -926,7 +929,7 @@ http.createServer((request, response) => {
 
 ### Instalando Hapi.js:
 ```bash
-npm install hapi
+$ npm install @hapi/hapi
 ```
 
 ### Criando a estrutura para criação de APIs com Hapi.js:
@@ -964,8 +967,9 @@ module.exports = main();
 ```
 
 ### Implementando rotas automatizadas:
-- baseRoute.js
 ```js
+// src/routes/base/baseRoute.js
+
 class BaseRoute {
     static methods() {
         return Object.getOwnPropertyNames(this.prototype)
@@ -976,9 +980,10 @@ class BaseRoute {
 module.exports = BaseRoute;
 ```
 
-- heroesRoutes.js
 ```js
-const BaseRoute = require('./base/ baseRoute');
+// src/routes/heroesRoutes.js
+
+const BaseRoute = require('./base/baseRoute');
 
 class HeroesRoutes extends BaseRoute {
     constructor(db) {
@@ -1049,7 +1054,7 @@ list() {
 
 ### Listando Heróis - Validando requisições com Joi:
 ```bash
-npm install joi
+$ npm install @hapi/joi
 ```
 ```js
 list() {
@@ -1181,7 +1186,7 @@ delete() {
 
 ### Refatorando a manipulação de erros:
 ```bash
-npm install boom
+$ npm install @hapi/boom
 ```
 
 ```js
@@ -1191,6 +1196,134 @@ if (result.n !== 1) return Boom.preconditionFailed('Hero not found!')
 #
 
 ## Documentação de Serviços com Swagger - Módulo 10
+
+### Instalando Vision, Inert e Hapi-Swagger:
+```bash
+$ npm install @hapi/vision @hapi/inert hapi-swagger
+```
+
+### Adicionando Swagger ao nosso Serviço:
+```js
+// src/api/index.js
+
+const Hapi = require('@hapi/hapi');
+const Inert = require('@hapi/inert')
+const Vision = require('@hapi/vision');
+const HapiSwagger = require('hapi-swagger');
+...
+async function main() {
+    ...
+    const swaggerOptions = {
+        info: {
+            title: 'API Heroes - #CursoNodeBR',
+            version: 'v1.0'
+        }
+    };
+
+    await app.register([
+        Inert,
+        Vision,
+        {
+            plugin: HapiSwagger,
+            options: swaggerOptions
+        }
+    ]);
+    ...
+};
+```
+
+```js
+// src/routes/heroesRoutes.js
+
+const Joi = require('@hapi/joi');
+const Boom = require('@hapi/boom');
+
+const BaseRoute = require('./base/baseRoute');
+
+const failAction = (request, headers, error) => {
+    throw error;
+};
+
+class HeroesRoutes extends BaseRoute {
+    constructor(db) {
+        super()
+        this.db = db
+    };
+
+    list() {
+        return {
+            path: '/heroes',
+            method: 'GET',
+            config: {
+                tags: ['api'],
+                description: 'Should list Heroes',
+                notes: 'Can page results and filter by name',
+                validate: {
+                    ...
+                }
+            },
+            handler: (request, headers) => {
+                ...
+            }
+        };
+    };
+
+    create() {
+        return {
+            path: '/heroes',
+            method: 'POST',
+            config: {
+                tags: ['api'],
+                description: 'Should create Hero',
+                notes: 'Should create a Hero with name and skill',
+                validate: {
+                    ...
+                }
+            },
+            handler: async (request) => {
+                ...
+            }
+        };
+    };
+
+    update() {
+        return {
+            path: '/heroes/{id}',
+            method: 'PATCH',
+            config: {
+                tags: ['api'],
+                description: 'Should update a Hero by id',
+                notes: 'Can update any field',
+                validate: {
+                    ...
+                }
+            },
+            handler: async (request) => {
+                ...
+            }
+        }
+    };
+
+    delete() {
+        return {
+            path: '/heroes/{id}',
+            method: 'DELETE',
+            config: {
+                tags: ['api'],
+                description: 'Should delete a Hero by id',
+                notes: 'The id should be valid',
+                validate: {
+                    ...
+                }
+            },
+            handler: async (request) => {
+                ...
+            }
+        };
+    };
+};
+
+```
 
 #
 

@@ -54,10 +54,10 @@ class HeroesRoutes extends BaseRoute {
                 validate: {
                     failAction,
                     payload: Joi.object({
-                            name: Joi.string().required().min(3).max(100),
-                            skill: Joi.string().required().min(2).max(20)
-                        })
-                    }
+                        name: Joi.string().required().min(3).max(100),
+                        skill: Joi.string().required().min(2).max(20)
+                    })
+                }
             },
             handler: async (request) => {
                 try {
