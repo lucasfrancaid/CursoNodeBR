@@ -27,6 +27,7 @@
 07. <a href="#introdução-ao-mongodb-e-bancos-não-relacionais-nosql---módulo-7"> Introdução ao MongoDB e Bancos Não-Relacionais (NoSQL) </a>
 08. <a href="#refatorando-nosso-projeto-para-bancos-de-dados-multi-schemas---módulo-8"> Refatorando nosso projeto para bancos de dados multi-schemas </a>
 09. <a href="#nodejs-e-web-services---criando-serviços-profissionais-com-hapijs---módulo-9"> Node.js e Web Services - Criando serviços profissionais com Hapi.js </a>
+10. <a href="#documentação-de-serviços-com-swagger---módulo-10"> Documentação de Serviços com Swagger </a>
 
 #
 
@@ -1186,6 +1187,10 @@ npm install boom
 ```js
 if (result.n !== 1) return Boom.preconditionFailed('Hero not found!')
 ```
+
+#
+
+## Documentação de Serviços com Swagger - Módulo 10
 
 #
 
