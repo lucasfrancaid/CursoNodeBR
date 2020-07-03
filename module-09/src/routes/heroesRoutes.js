@@ -1,7 +1,7 @@
 const Joi = require('joi');
+const Boom = require('boom');
 
 const BaseRoute = require('./base/baseRoute');
-const { request } = require('http');
 
 const failAction = (request, headers, error) => {
     throw error;
@@ -34,8 +34,8 @@ class HeroesRoutes extends BaseRoute {
                     return this.db.read(query, skip, limit)
                 } catch (error) {
                     console.error('Error', error)
-                    return 'Intern server error!'
-                }
+                    return Boom.internal();
+                };
             }
         };
     };
@@ -59,8 +59,8 @@ class HeroesRoutes extends BaseRoute {
                     return await this.db.create({ name, skill })
                 } catch (error) {
                     console.error('Error', error)
-                    return 'Internal server error!'
-                }
+                    return Boom.internal();
+                };
             }
         };
     };
@@ -89,15 +89,15 @@ class HeroesRoutes extends BaseRoute {
                     
                     const result = await this.db.update(id, data)
 
-                    if (result.nModified !== 1) return { statusCode: result.statusCode, message: 'Hero could not updated!' };
+                    if (result.nModified !== 1) return Boom.preconditionFailed('Hero not found!');
                     return { statusCode: result.statusCode, message: 'Hero was updated!' }
 
                 } catch (error) {
                     console.error('Error', error)
-                    return 'Internal server error!'
-                }
+                    return Boom.internal();
+                };
             }
-        };
+        }
     };
 
     delete() {
@@ -117,13 +117,13 @@ class HeroesRoutes extends BaseRoute {
                     const { id } = request.params
                     const result = await this.db.delete(id)
 
-                    if (result.n !== 1) return { statusCode: result.statusCode, message: 'Hero could not deleted!' };
+                    if (result.n !== 1) return Boom.preconditionFailed('Hero not found!')
                     return { statusCode: result.statusCode, message: 'Hero was deleted!' }
 
                 } catch (error) {
                     console.error('Error', error)
-                    return 'Internal server error!'
-                }
+                    return Boom.internal();
+                };
             }
         };
     };
