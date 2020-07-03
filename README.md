@@ -1,5 +1,16 @@
 # Imersão em desenvolvimento de APIs com Node.js, By #NodeBR!
 
+## Tecnologias:
+* [Node.js](https://nodejs.org/)
+* [Mocha](https://mochajs.org/)
+* [Nock](https://www.npmjs.com/package/nock)
+* [Commander](https://www.npmjs.com/package/commander)
+* [Docker](https://www.docker.com/)
+* [PostgreSQL](https://www.postgresql.org/)
+* [MongoDB](https://www.mongodb.com/)
+* [Sequelize](https://sequelize.org/)
+* [Mongoose](https://mongoosejs.com/)
+* [Hapi.js](https://hapi.dev/)
 
 ## Sumário:
 
@@ -12,6 +23,7 @@
 06. <a href="#introdução-ao-postgres-e-bancos-relacionais---módulo-06"> Introdução ao Postgres e Bancos Relacionais </a>
 07. <a href="#introdução-ao-mongodb-e-bancos-não-relacionais-nosql---módulo-7"> Introdução ao MongoDB e Bancos Não-Relacionais (NoSQL) </a>
 08. <a href="#refatorando-nosso-projeto-para-bancos-de-dados-multi-schemas---módulo-8"> Refatorando nosso projeto para bancos de dados multi-schemas </a>
+09. <a href="#nodejs-e-web-services---criando-serviços-profissionais-com-hapijs---módulo-9"> Node.js e Web Services - Criando serviços profissionais com Hapi.js </a>
 
 #
 
@@ -892,3 +904,286 @@ delete(id) {
         └── postgresStrategy.test.js
 ```
 
+#
+
+## Node.js e Web Services - Criando serviços profissionais com Hapi.js - Módulo 9
+
+### Conhecendo o módulo HTTP:
+```js
+const http = require('http');
+
+const PORT = 3333;
+
+http.createServer((request, response) => {
+    response.end('Hello Node!')
+})
+.listen(PORT, () => console.log(`Listening on port ${PORT}!`))
+```
+
+### Instalando Hapi.js:
+```bash
+npm install hapi
+```
+
+### Criando a estrutura para criação de APIs com Hapi.js:
+```js
+const Hapi = require('hapi');
+
+const Context = require('../db/strategies/base/contextStrategy');
+const MongoDB = require('../db/strategies/mongodb');
+const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
+const HeroesRoutes = require('../routes/heroesRoutes');
+
+const app = new Hapi.Server({
+    port: 3333
+});
+
+function mapRoutes(instance, methods) {
+    return methods.map(method => instance[method]());
+};
+
+async function main() {
+    const connection = MongoDB.connect()
+    const context = new Context(new MongoDB(connection, HeroesSchema))
+
+    app.route([
+        ...mapRoutes(new HeroesRoutes(context), HeroesRoutes.methods())
+    ])
+
+    await app.start()
+    console.log('Listening on port', app.info.port)
+
+    return app;
+};
+
+module.exports = main();
+```
+
+### Implementando rotas automatizadas:
+- baseRoute.js
+```js
+class BaseRoute {
+    static methods() {
+        return Object.getOwnPropertyNames(this.prototype)
+            .filter(method => method !== 'constructor' && !method.startsWith('_'))
+    };
+};
+
+module.exports = BaseRoute;
+```
+
+- heroesRoutes.js
+```js
+const BaseRoute = require('./base/ baseRoute');
+
+class HeroesRoutes extends BaseRoute {
+    constructor(db) {
+        super()
+        this.db = db
+    };
+
+    list() {
+        return {
+            path: '/heroes',
+            method: 'GET',
+            handler: (request, headers) => {
+                return this.db.read()
+            }
+        };
+    };
+};
+
+module.exports = HeroesRoutes;
+```
+
+### Entendendo o padrão RESTful para desenvolvimento de APIs:
+- Stateless
+- Dados de clientes são armazenados em seus respectivos navegadores
+- Em geral retornam JSON
+
+### Métodos HTTP:
+- GET: Obter dados de um recurso
+- POST: Criar item de um recurso
+- PUT: Atualizar um recurso com uma nova representação
+- PATCH: Atualizar um recurso parcialmente
+- DELETE: Remover um recurso
+
+### Padrões de URL:
+- GET: /heroes
+- POST: /heroes
+- PUT: /heroes/:id -> body: { name, skill, date }
+- PATCH: /heroes/:id -> body: { name }
+- DELETE: /heroes/:id
+- GET: /heroes/:id
+- GET: /heroes/:id/headquarters
+- GET: /heroes/:id/headquarters/:id
+
+### Listando Heróis - GET:
+```js
+list() {
+    return {
+        path: '/heroes',
+        method: 'GET',
+        handler: (request, headers) => {
+            try {
+                const { skip, limit, name } = request.query
+                let query = {}
+                
+                if (name) query.name = name
+                if (isNaN(skip)) throw Error('Type of skip is incorrect')
+                if (isNaN(limit)) throw Error('Type of limit is incorrect')
+
+                return this.db.read(query, parseInt(skip), parseInt(limit))
+            } catch (error) {
+                console.error('Error', error)
+                return 'Intern server error!'
+            }
+        }
+    };
+};
+```
+
+### Listando Heróis - Validando requisições com Joi:
+```bash
+npm install joi
+```
+```js
+list() {
+    return {
+        path: '/heroes',
+        method: 'GET',
+        config: {
+            validate: {
+                failAction: (request, headers, error) => {
+                    throw error;
+                },
+                query: {
+                    skip: Joi.number().integer().default(0),
+                    limit: Joi.number().integer().default(10),
+                    name: Joi.string().min(2).max(50)
+                }
+            }
+        },
+        handler: (request, headers) => {
+            try {
+                const { skip, limit, name } = request.query
+                const query = name ? { name: { $regex: `.*${name}*.` } } : {}
+                return this.db.read(query, skip, limit)
+            } catch (error) {
+                console.error('Error', error)
+                return 'Intern server error!'
+            }
+        }
+    };
+};
+```
+
+### Cadastrando Heróis - POST:
+```js
+create() {
+    return {
+        path: '/heroes',
+        method: 'POST',
+        config: {
+            validate: {
+                failAction,
+                payload: {
+                    name: Joi.string().required().min(3).max(100),
+                    skill: Joi.string().required().min(2).max(20)
+                }
+            }
+        },
+        handler: async (request) => {
+            try {
+                const { name, skill } = request.payload
+                return await this.db.create({ name, skill })
+            } catch (error) {
+                console.error('Error', error)
+                return 'Internal server error!'
+            }
+        }
+    };
+};
+```
+
+### Atualizando Heróis - PATCH / PUT:
+```js
+update() {
+    return {
+        path: '/heroes/{id}',
+        method: 'PATCH',
+        config: {
+            validate: {
+                failAction,
+                params: {
+                    id: Joi.string().required()
+                },
+                payload: {
+                    name: Joi.string().min(3).max(100),
+                    skill: Joi.string().min(2).max(20)
+                }
+            }
+        },
+        handler: async (request) => {
+            try {
+                const { id } = request.params
+                const stringData = JSON.stringify(request.payload)
+                const data = JSON.parse(stringData)
+                
+                const result = await this.db.update(id, data)
+
+                if (result.nModified !== 1) return { statusCode: result.statusCode, message: 'Hero could not updated!' };
+                return { statusCode: result.statusCode, message: 'Hero was updated!' }
+
+            } catch (error) {
+                console.error('Error', error)
+                return 'Internal server error!'
+            }
+        }
+    }
+};
+```
+
+### Removendo Heróis - DELETE:
+```js
+delete() {
+    return {
+        path: '/heroes/{id}',
+        method: 'DELETE',
+        config: {
+            validate: {
+                failAction,
+                params: {
+                    id: Joi.string().required()
+                }
+            }
+        },
+        handler: async (request) => {
+            try {
+                const { id } = request.params
+                const result = await this.db.delete(id)
+
+                if (result.n !== 1) return { statusCode: result.statusCode, message: 'Hero could not deleted!' };
+                return { statusCode: result.statusCode, message: 'Hero was deleted!' }
+
+            } catch (error) {
+                console.error('Error', error)
+                return 'Internal server error!'
+            }
+        }
+    };
+};
+```
+
+### Refatorando a manipulação de erros:
+```bash
+npm install boom
+```
+
+```js
+if (result.n !== 1) return Boom.preconditionFailed('Hero not found!')
+```
+
+#
+
+## Faça também o [Curso NodeBR](https://treinamento.nodebr.org/), ministrado por [@ErickWendel](https://github.com/ErickWendel).
