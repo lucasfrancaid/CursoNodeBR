@@ -2,7 +2,6 @@ const assert = require('assert');
 
 const MongoDB = require('../db/strategies/mongodb');
 const Context = require('../db/strategies/base/contextStrategy');
-
 const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
 
 let context;
