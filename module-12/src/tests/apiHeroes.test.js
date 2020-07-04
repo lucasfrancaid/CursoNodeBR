@@ -11,7 +11,7 @@ const MOCK_HERO_UPDATE = {
     skill: 'Shield'
 };
 
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOjEsImlhdCI6MTU5MzgxMjgwOX0.ap9Efzj0mWzMI5Z8Uv-UggD5z1SPv30EPAMl-nu4h1Y';
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOjEsImlhdCI6MTU5MzkwMDgyOX0._MqCOnvOn6NZJGLL4V6pSdQ8lrQ6NWWTENkMAS59dwM'
 let MOCK_ID;
 let app;
 
@@ -20,6 +20,7 @@ const headers = {
 };
 
 describe('Suite of tests API Heroes', function () {
+    this.timeout(Infinity);
     this.beforeAll(async () => {
         app = await api
     });
