@@ -6,9 +6,12 @@ const HapiSwagger = require('hapi-swagger');
 
 const Context = require('../db/strategies/base/contextStrategy');
 const MongoDB = require('../db/strategies/mongodb');
+const Postgres = require('../db/strategies/postgres');
+
+const UserSchema = require('../db/strategies/postgres/schemas/userSchema');
+const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
 
 const AuthRoutes = require('../routes/authRoutes');
-const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
 const HeroesRoutes = require('../routes/heroesRoutes');
 
 const JWT_SECRET = 'SECRET_KEY'
@@ -22,8 +25,12 @@ function mapRoutes(instance, methods) {
 };
 
 async function main() {
+    const connectionPostgres = await Postgres.connect()
+    const userSchema = await Postgres.defineModel(connectionPostgres, UserSchema)
+    const contextPostgres = new Context(new Postgres(connectionPostgres, userSchema))
+    
     const connection = MongoDB.connect()
-    const context = new Context(new MongoDB(connection, HeroesSchema))
+    const contextMongoDB = new Context(new MongoDB(connection, HeroesSchema))
 
     const swaggerOptions = {
         info: {
@@ -44,10 +51,12 @@ async function main() {
 
     app.auth.strategy('jwt', 'jwt', {
         key: JWT_SECRET,
-        // options: {
-        //     expiresIn: 20
-        // },
-        validate: (data, request) => {
+        validate: async (data, request) => {
+            const result = await contextPostgres.read({ id: data.id, username: data.username })
+            if (!result) return {
+                isValid: false
+            };
+        
             return {
                 isValid: true
             };
@@ -57,8 +66,8 @@ async function main() {
     app.auth.default('jwt')
 
     app.route([
-        ...mapRoutes(new AuthRoutes(JWT_SECRET), AuthRoutes.methods()),
-        ...mapRoutes(new HeroesRoutes(context), HeroesRoutes.methods())
+        ...mapRoutes(new AuthRoutes(JWT_SECRET, contextPostgres), AuthRoutes.methods()),
+        ...mapRoutes(new HeroesRoutes(contextMongoDB), HeroesRoutes.methods())
     ]);
 
     await app.start()

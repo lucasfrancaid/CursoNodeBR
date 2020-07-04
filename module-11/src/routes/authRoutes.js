@@ -3,19 +3,16 @@ const Boom = require('@hapi/boom');
 const Jwt = require('jsonwebtoken');
 
 const BaseRoute = require('./base/baseRoute');
+const PasswordHelper = require('../helpers/passwordHelper');
 
 const failAction = (request, headers, error) => {
     throw error;
 };
 
-const USER = {
-    username: 'admin',
-    password: 'admin123'
-}
-
 class AuthRoutes extends BaseRoute {
-    constructor(secret) {
+    constructor(secret, db) {
         super()
+        this.db = db
         this.secret = secret
     };
 
@@ -38,16 +35,16 @@ class AuthRoutes extends BaseRoute {
             },
             handler: async (request) => {
                 const { username, password } = request.payload
-                if (
-                    username.toLowerCase() !== USER.username.toLowerCase() || 
-                    password !== USER.password
-                ) {
-                    return Boom.unauthorized()
-                };
+
+                const [user] = await this.db.read({ username: username.toLowerCase() })
+                if (!user) return Boom.unauthorized('User not exist!')
+
+                const match = await PasswordHelper.comparePassword(password, user.password)
+                if (!match) return Boom.unauthorized('Invalid user or password!')
 
                 const token = Jwt.sign({
                     username,
-                    id: 1
+                    id: user.id
                 }, this.secret);
 
                 return { 
