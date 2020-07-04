@@ -24,8 +24,10 @@ describe('MongoDB strategy', function () {
     });
 
     it('MongoDB Connection', async () => {
-        const result = await context.isConnected()
+        let result = await context.isConnected()
         const expected = 'Connected'
+        if (result !== expected) await new Promise(resolve => setTimeout(resolve, 1000))
+        result = await context.isConnected()
         assert.equal(result, expected)
     });
 

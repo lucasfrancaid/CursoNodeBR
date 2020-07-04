@@ -17,14 +17,17 @@ let MOCK_HERO_ID;
 let context;
 
 describe('MongoDB strategy', function () {
-    this.beforeAll(() => {
+    this.timeout(Infinity);
+    this.beforeAll(async () => {
         const connection = MongoDB.connect()
         context = new Context(new MongoDB(connection, HeroesSchema))
     });
 
     it('MongoDB Connection', async () => {
-        const result = await context.isConnected()
+        let result = await context.isConnected()
         const expected = 'Connected'
+        if (result !== expected) await new Promise(resolve => setTimeout(resolve, 1000))
+        result = await context.isConnected()
         assert.equal(result, expected)
     });
 
