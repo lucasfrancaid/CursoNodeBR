@@ -35,6 +35,7 @@
 09. <a href="#nodejs-e-web-services---criando-serviços-profissionais-com-hapijs---módulo-9"> Node.js e Web Services - Criando serviços profissionais com Hapi.js </a>
 10. <a href="#documentação-de-serviços-com-swagger---módulo-10"> Documentação de Serviços com Swagger </a>
 11. <a href="#autenticação-com-json-web-token---módulo-11"> Autenticação com JSON Web Token </a>
+12. <a href="#publicação-de-serviços-na-web---módulo-12"> Publicação de serviços na Web </a>
 
 #
 
@@ -1602,6 +1603,36 @@ async function main() {
 };
 
 module.exports = main();
+```
+
+#
+
+## Publicação de serviços na Web - Módulo 12
+
+### Trabalhando com multi-environments (development, production):
+```bash
+$ npm install dotenv
+```
+
+### Configurando o Dotenv para dev ou prod:
+```js
+const { config } = require('dotenv');
+const { join } = require('path');
+const { ok } = require('assert');
+
+const env = process.env.NODE_ENV || 'dev';
+ok(env === 'prod' || env === 'dev', 'Invalid env, should be dev or prod');
+
+const configPath = join(__dirname, '../../config', `.env.${env}`);
+config({
+    path: configPath
+});
+```
+
+### Rodando testes com variáveis do ambiente de produção com cross-env:
+```bash
+$ sudo npm i -g cross-env
+$ cross-env NODE_ENV=prod npm t
 ```
 
 #
