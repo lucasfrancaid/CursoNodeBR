@@ -53,8 +53,9 @@ class Postgres extends ICrud {
         return await this._schema.findAll({ where: item, raw: true })
     };
 
-    async update(id, item) {
-        return await this._schema.update(item, { where: { id: id } })
+    async update(id, item, upsert=false) {
+        const method = upsert ? 'upsert' : 'update'
+        return await this._schema[method](item, { where: { id: id } })
     };
 
     async delete(id) {
