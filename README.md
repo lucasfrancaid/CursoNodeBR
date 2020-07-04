@@ -16,6 +16,9 @@
 * [Vision](https://hapi.dev/module/vision/)
 * [Inert](https://hapi.dev/module/inert/)
 * [Swagger](https://www.npmjs.com/package/hapi-swagger)
+* [Hapi-Auth-Jwt2](https://www.npmjs.com/package/hapi-auth-jwt2)
+* [JsonWebToken](https://www.npmjs.com/package/jsonwebtoken)
+* [Bcrypt](https://www.npmjs.com/package/bcrypt)
 
 
 ## Sumário:
@@ -31,6 +34,7 @@
 08. <a href="#refatorando-nosso-projeto-para-bancos-de-dados-multi-schemas---módulo-8"> Refatorando nosso projeto para bancos de dados multi-schemas </a>
 09. <a href="#nodejs-e-web-services---criando-serviços-profissionais-com-hapijs---módulo-9"> Node.js e Web Services - Criando serviços profissionais com Hapi.js </a>
 10. <a href="#documentação-de-serviços-com-swagger---módulo-10"> Documentação de Serviços com Swagger </a>
+11. <a href="#autenticação-com-json-web-token---módulo-11"> Autenticação com JSON Web Token </a>
 
 #
 
@@ -1323,6 +1327,281 @@ class HeroesRoutes extends BaseRoute {
     };
 };
 
+```
+
+#
+
+## Autenticação com JSON Web Token - Módulo 11
+
+### O padrão JSON Web Token (JWT):
+- API envia um token para acesso aos serviços
+- Cliente envia este token via Headers
+- A cada request este token é validado
+- Refresh token
+
+### Instalando o JWT:
+```bash
+$ npm install jsonwebtoken hapi-auth-jwt2
+```
+
+### Criando a rota de autenticação:
+```js
+const Joi = require('@hapi/joi');
+const Boom = require('@hapi/boom');
+const Jwt = require('jsonwebtoken');
+
+const BaseRoute = require('./base/baseRoute');
+
+const failAction = (request, headers, error) => {
+    throw error;
+};
+
+const USER = {
+    username: 'admin',
+    password: 'admin123'
+}
+
+class AuthRoutes extends BaseRoute {
+    constructor(secret, db) {
+        super()
+        this.db = db
+        this.secret = secret
+    };
+
+    login() {
+        return {
+            path: '/login',
+            method: 'POST',
+            config: {
+                auth: false,
+                tags: ['api'],
+                description: 'Get token',
+                notes: 'Does login with user and password',
+                validate: {
+                    failAction,
+                    payload: Joi.object({
+                        username: Joi.string().required(),
+                        password: Joi.string().required()
+                    })
+                }
+            },
+            handler: async (request) => {
+                const { username, password } = request.payload
+
+                const [user] = await this.db.read({ username: username.toLowerCase() })
+                if (!user) return Boom.unauthorized('User not exist!')
+
+                const match = await PasswordHelper.comparePassword(password, user.password)
+                if (!match) return Boom.unauthorized('Invalid user or password!')
+
+                const token = Jwt.sign({
+                    username,
+                    id: user.id
+                }, this.secret);
+
+                return { 
+                    token
+                };
+            }
+        };
+    };
+};
+
+module.exports = AuthRoutes;
+```
+
+### Configurando o JWT:
+```js
+// src/api/index.js
+
+const Hapi = require('@hapi/hapi');
+const Inert = require('@hapi/inert')
+const Vision = require('@hapi/vision');
+const HapiJwt = require('hapi-auth-jwt2');
+const HapiSwagger = require('hapi-swagger');
+...
+const AuthRoutes = require('../routes/authRoutes');
+...
+const JWT_SECRET = 'SECRET_KEY'
+...
+async function main() {
+    ...
+    await app.register([
+        HapiJwt,
+        Inert,
+        Vision,
+        {
+            plugin: HapiSwagger,
+            options: swaggerOptions
+        }
+    ]);
+
+    app.auth.strategy('jwt', 'jwt', {
+        key: JWT_SECRET,
+        validate: (data, request) => {
+            return {
+                isValid: true
+            };
+        }
+    });
+
+    app.auth.default('jwt')
+
+    app.route([
+        ...mapRoutes(new AuthRoutes(JWT_SECRET), AuthRoutes.methods()),
+        ...mapRoutes(new HeroesRoutes(context), HeroesRoutes.methods())
+    ]);
+    ...
+};
+
+module.exports = main();
+```
+
+### Criando o módulo de autenticação de usuários e hash de senha com bcrypt:
+```bash
+$ npm install bcrypt
+```
+
+```js
+// src/helpers/passwordHelper.js
+
+const Bcrypt = require('bcrypt');
+const { promisify } = require('util');
+
+const hashAsync = promisify(Bcrypt.hash)
+const compareAsync = promisify(Bcrypt.compare)
+
+const SALT = 3
+
+class PasswordHelper {
+    static hashPassword (pass) {
+        return hashAsync(pass, SALT)
+    };
+
+    static comparePassword (pass, hash) {
+        return compareAsync(pass, hash)
+    };
+};
+
+module.exports = PasswordHelper;
+```
+
+### Usando o Postgres para login:
+```js
+// src/db/strategies/postgres/schemas/userSchema.js
+
+const Sequelize = require('sequelize');
+
+const UserSchema = {
+    name: 'users',
+    schema: {
+        id: {
+            type: Sequelize.INTEGER,
+            required: true,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        username: {
+            type: Sequelize.STRING,
+            unique: true,
+            required: true
+        },
+        password: {
+            type: Sequelize.STRING,
+            required: true
+        }
+    },
+    options: {
+        tableName: 'TB_USERS',
+        freezeTableName: false,
+        timestamps: false
+    }
+};
+
+module.exports = UserSchema;
+```
+
+### Adicionando o Postgres na API:
+```js
+const Hapi = require('@hapi/hapi');
+const Inert = require('@hapi/inert')
+const Vision = require('@hapi/vision');
+const HapiJwt = require('hapi-auth-jwt2');
+const HapiSwagger = require('hapi-swagger');
+
+const Context = require('../db/strategies/base/contextStrategy');
+const MongoDB = require('../db/strategies/mongodb');
+const Postgres = require('../db/strategies/postgres');
+
+const UserSchema = require('../db/strategies/postgres/schemas/userSchema');
+const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
+
+const AuthRoutes = require('../routes/authRoutes');
+const HeroesRoutes = require('../routes/heroesRoutes');
+
+const JWT_SECRET = 'SECRET_KEY'
+
+const app = new Hapi.Server({
+    port: 3333
+});
+
+function mapRoutes(instance, methods) {
+    return methods.map(method => instance[method]());
+};
+
+async function main() {
+    const connectionPostgres = await Postgres.connect()
+    const userSchema = await Postgres.defineModel(connectionPostgres, UserSchema)
+    const contextPostgres = new Context(new Postgres(connectionPostgres, userSchema))
+    
+    const connection = MongoDB.connect()
+    const contextMongoDB = new Context(new MongoDB(connection, HeroesSchema))
+
+    const swaggerOptions = {
+        info: {
+            title: 'API Heroes - #CursoNodeBR',
+            version: 'v1.0'
+        }
+    };
+
+    await app.register([
+        HapiJwt,
+        Inert,
+        Vision,
+        {
+            plugin: HapiSwagger,
+            options: swaggerOptions
+        }
+    ]);
+
+    app.auth.strategy('jwt', 'jwt', {
+        key: JWT_SECRET,
+        validate: async (data, request) => {
+            const result = await contextPostgres.read({ id: data.id, username: data.username })
+            if (!result) return {
+                isValid: false
+            };
+        
+            return {
+                isValid: true
+            };
+        }
+    });
+
+    app.auth.default('jwt')
+
+    app.route([
+        ...mapRoutes(new AuthRoutes(JWT_SECRET, contextPostgres), AuthRoutes.methods()),
+        ...mapRoutes(new HeroesRoutes(contextMongoDB), HeroesRoutes.methods())
+    ]);
+
+    await app.start()
+    console.log('Listening on port', app.info.port)
+
+    return app;
+};
+
+module.exports = main();
 ```
 
 #
