@@ -1,6 +1,31 @@
-# Imersão em desenvolvimento de APIs com Node.js, By #NodeBR!
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
-## Tecnologias:
+<p align="center">
+    <a href="https://treinamento.nodebr.org/" target="_blank">
+        <img src="public/nodebr-1.png" alt="NodeBR"/>
+    </a>
+</p>
+
+<p align="center">
+    <h1 align="center">
+        Imersão em desenvolvimento de APIs com Node.js, By #NodeBR!
+    </h1>
+</p>
+
+<p align="center">
+    API Auth e Heroes com Swagger:
+    <br/>
+    <a href="https://cursonodebr-study.herokuapp.com/documentation" target="_blank"><strong>https://cursonodebr-study.herokuapp.com/documentation</strong></a>
+</p>
+
+<p align="center">
+    Cobertura de testes do app com Istanbul.js:
+    <br/>
+    <a href="https://cursonodebr-study.herokuapp.com/documentation" target="_blank"><strong>https://cursonodebr-study.herokuapp.com/coverage/</strong></a>
+</p>
+
+## 💻 Tecnologias:
+
 * [Node.js](https://nodejs.org/)
 * [Mocha](https://mochajs.org/)
 * [Nock](https://www.npmjs.com/package/nock)
@@ -19,9 +44,13 @@
 * [Hapi-Auth-Jwt2](https://www.npmjs.com/package/hapi-auth-jwt2)
 * [JsonWebToken](https://www.npmjs.com/package/jsonwebtoken)
 * [Bcrypt](https://www.npmjs.com/package/bcrypt)
+* [Dotenv](https://www.npmjs.com/package/dotenv)
+* [Cross-env](https://www.npmjs.com/package/cross-env)
+* [Heroku](https://www.heroku.com/)
+* [PM2](https://pm2.keymetrics.io/)
+* [Istanbul](https://istanbul.js.org/)
 
-
-## Sumário:
+## 📖 Sumário:
 
 00. <a href="#introdução---módulo-00"> Introdução </a>
 01. <a href="#sincronia-de-funções-javascript---módulo-01"> Sincronia de funções Javascript </a>
@@ -1677,6 +1706,51 @@ $ npm install pm2
 $ heroku config:set PM2_PUBLIC_KEY=yourkey PM2_SECRET_KEY=yourkey
 ```
 
+### Expondo cobertura de código com istanbul:
+```bash
+$ npm install -D nyc
+```
+
+```json
+// package.json
+
+  "scripts": {
+    "test": "nyc --reporter=html mocha --timeout 10000 --exit src/tests/*.test.js",
+    ...
+  },
+```
+
+```js
+const BaseRoute = require('./base/baseRoute');
+const { join } = require('path');
+
+class UtilRoutes extends BaseRoute {
+    coverage() {
+        return {
+            path: '/coverage/{param*}',
+            method: 'GET',
+            config: {
+                auth: false,
+            },
+            handler: {
+                directory: {
+                    path: join(__dirname, '../../coverage'),
+                    redirectToSlash: true,
+                    index: true
+                }
+            }
+        };
+    };
+};
+
+module.exports = UtilRoutes;
+```
+
 #
 
 ## Faça também o [Curso NodeBR](https://treinamento.nodebr.org/), ministrado por [@ErickWendel](https://github.com/ErickWendel).
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/lucasfrancaid

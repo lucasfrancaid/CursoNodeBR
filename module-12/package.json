@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --timeout 10000 src/tests/*test.js",
+    "postinstall": "cross-env NODE_ENV=prod npm t",
+    "test": "nyc --reporter=html mocha --timeout 10000 --exit src/tests/*test.js",
     "test:watch": "mocha src/tests/*test.js -w",
     "test:prod": "cross-env NODE_ENV=prod npm t",
-    "prod": "cross-env NODE_ENV=prod node src/api"
+    "prod": "cross-env NODE_ENV=prod pm2-runtime src/api"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +32,7 @@
     "sequelize": "^6.3.0"
   },
   "devDependencies": {
-    "mocha": "^8.0.1"
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0"
   }
 }

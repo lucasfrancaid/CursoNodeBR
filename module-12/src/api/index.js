@@ -23,6 +23,7 @@ const Postgres = require('../db/strategies/postgres');
 const UserSchema = require('../db/strategies/postgres/schemas/userSchema');
 const HeroesSchema = require('../db/strategies/mongodb/schemas/heroesSchema');
 
+const UtilRoutes = require('../routes/utilRoutes');
 const AuthRoutes = require('../routes/authRoutes');
 const HeroesRoutes = require('../routes/heroesRoutes');
 
@@ -77,6 +78,7 @@ async function main() {
     app.auth.default('jwt')
 
     app.route([
+        ...mapRoutes(new UtilRoutes(), UtilRoutes.methods()),
         ...mapRoutes(new AuthRoutes(JWT_SECRET, contextPostgres), AuthRoutes.methods()),
         ...mapRoutes(new HeroesRoutes(contextMongoDB), HeroesRoutes.methods())
     ]);
