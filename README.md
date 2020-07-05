@@ -1632,6 +1632,7 @@ config({
 ### Rodando testes com variáveis do ambiente de produção com cross-env:
 ```bash
 $ sudo npm install -g cross-env
+$ npm install cross-env
 $ cross-env NODE_ENV=prod npm t
 ```
 
@@ -1647,8 +1648,33 @@ $ heroku login
 $ heroku apps:list
 $ heroku apps:create cursonodebr-study
 $ heroku git:remote --app cursonodebr-study
-$ heroku buildpacks:set heroku/nodejs
 $ git push heroku master
+```
+
+### Trabalhando com PM2 para gerenciamento de apps:
+Problemas comuns de aplicação node.js em produção:
+- Comando node arquivo.js se algo inesperado ocorrer, tudo para!
+- É necessário reiniciar tudo de novo manualmente
+- Impossível de escalar
+- Necessário uma ferramenta de gestão de aplicação
+
+### Instalando PM2 Key Metrics:
+```bash
+$ sudo npm install -g pm2
+$ npm install pm2
+```
+
+### Configurando o package.json pra rodar a aplicação com pm2:
+```json
+  "scripts": {
+    ...
+    "prod": "cross-env NODE_ENV=prod node src/api"
+  }
+```
+
+### Fazendo o link entre PM2 e Heroku:
+```bash
+$ heroku config:set PM2_PUBLIC_KEY=yourkey PM2_SECRET_KEY=yourkey
 ```
 
 #
