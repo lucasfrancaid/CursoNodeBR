@@ -1,7 +1,7 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 <p align="center">
-    <a href="https://treinamento.nodebr.org/" target="_blank">
+    <a href="https://treinamento.nodebr.org/">
         <img src="public/nodebr-1.png" alt="NodeBR"/>
     </a>
 </p>
@@ -15,13 +15,13 @@
 <p align="center">
     API Auth e Heroes com Swagger:
     <br/>
-    <a href="https://cursonodebr-study.herokuapp.com/documentation" target="_blank"><strong>https://cursonodebr-study.herokuapp.com/documentation</strong></a>
+    <a href="https://cursonodebr-study.herokuapp.com/documentation"><strong>https://cursonodebr-study.herokuapp.com/documentation</strong></a>
 </p>
 
 <p align="center">
     Cobertura de testes do app com Istanbul.js:
     <br/>
-    <a href="https://cursonodebr-study.herokuapp.com/documentation" target="_blank"><strong>https://cursonodebr-study.herokuapp.com/coverage/</strong></a>
+    <a href="https://cursonodebr-study.herokuapp.com/coverage/"><strong>https://cursonodebr-study.herokuapp.com/coverage/</strong></a>
 </p>
 
 ## 💻 Tecnologias:
@@ -49,6 +49,33 @@
 * [Heroku](https://www.heroku.com/)
 * [PM2](https://pm2.keymetrics.io/)
 * [Istanbul](https://istanbul.js.org/)
+
+## 🚀 Utilizando a API:
+- Para utilizar a API <a href="https://cursonodebr-study.herokuapp.com/documentation#/login/postLogin"><b>Clique Aqui</b></a> *Atenção: Utilize CTRL+Clique (para abrir em outra aba)*
+- Com a página aberta, clique em *Try out* e substitua o conteúdo de body com o seguinte json:
+```json
+{
+  "username": "admin",
+  "password": "123"
+}
+```
+- Logo abaixo, clique em executar, após a execução desça um pouco a página e você vai encontrar o campo *Response body*:
+```json
+{
+    "token": "AquiTeraUmTokenQueVoceIriaCopiar"
+}
+```
+- Copie o corpo do token presente no *Response body*, acesse qualquer rota de *Heroes* que estará disponível ao subir a página
+- Cole o token que foi copiado no login, dentro do campo *authorization* e execute a rota selecionada
+- A partir daí, utilize esse token para testar as rotas que desejar 😎
+
+#
+
+<p align="center">
+    <h1 align="center">
+        Conteúdo do curso, módulos e anotações
+    </h1>
+</p>
 
 ## 📖 Sumário:
 
