@@ -50,6 +50,8 @@
 * [PM2](https://pm2.keymetrics.io/)
 * [Istanbul](https://istanbul.js.org/)
 
+<br/>
+
 ## 🚀 Utilizando a API:
 - Para utilizar a API <a href="https://cursonodebr-study.herokuapp.com/documentation#/login/postLogin"><b>Clique Aqui</b></a> *Atenção: Utilize CTRL+Clique (para abrir em outra aba)*
 - Com a página aberta, clique em *Try out* e substitua o conteúdo de body com o seguinte json:
@@ -62,12 +64,14 @@
 - Logo abaixo, clique em executar, após a execução desça um pouco a página e você vai encontrar o campo *Response body*:
 ```json
 {
-    "token": "AquiTeraUmTokenQueVoceIriaCopiar"
+    "token": "AquiTeraUmTokenQueVoceIraCopiar"
 }
 ```
-- Copie o corpo do token presente no *Response body*, acesse qualquer rota de *Heroes* que estará disponível ao subir a página
-- Cole o token que foi copiado no login, dentro do campo *authorization* e execute a rota selecionada
+- Copie o corpo do token presente no *Response body*, depois acesse qualquer uma das rotas de *Heroes*, que estaram disponíveis ao subir a página
+- Cole o token copiado dentro do campo *authorization* na rota escolhida e clique em *Execute*
 - A partir daí, utilize esse token para testar as rotas que desejar 😎
+
+<br/>
 
 #
 
