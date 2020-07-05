@@ -1631,8 +1631,24 @@ config({
 
 ### Rodando testes com variáveis do ambiente de produção com cross-env:
 ```bash
-$ sudo npm i -g cross-env
+$ sudo npm install -g cross-env
 $ cross-env NODE_ENV=prod npm t
+```
+
+### Publicação de nossos serviços e bancos de dados gratuitos com Heroku:
+```bash
+$ sudo npm install -g heroku
+```
+
+### Executando os comandos para subir o ambiente de produção:
+```bash
+--- In module-12/
+$ heroku login
+$ heroku apps:list
+$ heroku apps:create cursonodebr-study
+$ heroku git:remote --app cursonodebr-study
+$ heroku buildpacks:set heroku/nodejs
+$ git push heroku master
 ```
 
 #
