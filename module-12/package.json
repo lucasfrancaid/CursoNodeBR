@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha src/tests/*test.js",
+    "test": "mocha --timeout 10000 src/tests/*test.js",
     "test:watch": "mocha src/tests/*test.js -w",
     "test:prod": "cross-env NODE_ENV=prod npm t",
-    "prod": "cross-env NODE_ENV=prod node src/api/index.js"
+    "prod": "cross-env NODE_ENV=prod node src/api"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +26,7 @@
     "mongoose": "^5.9.21",
     "pg": "^8.2.1",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^6.2.4"
+    "sequelize": "^6.3.0"
   },
   "devDependencies": {
     "mocha": "^8.0.1"

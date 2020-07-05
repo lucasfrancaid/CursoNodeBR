@@ -11,7 +11,7 @@ const MOCK_HERO_UPDATE = {
     skill: 'Shield'
 };
 
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOjEsImlhdCI6MTU5MzkwMDgyOX0._MqCOnvOn6NZJGLL4V6pSdQ8lrQ6NWWTENkMAS59dwM'
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOjEsImlhdCI6MTU5MzkxNDQ1MX0.74BxqIbK5N9P0ma37F6uskYHgy7LrQYatF8Dx0g6Pjo'
 let MOCK_ID;
 let app;
 
