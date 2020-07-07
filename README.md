@@ -27,7 +27,7 @@
 <p align="center">
     Saiba como executar este projeto em sua máquina local:
     <br/>
-    <a href="./module-12/README.md"><strong>Documentação</strong></a>
+    <a href="./server/README.md"><strong>Documentação</strong></a>
 </p>
 
 ## 💻 Tecnologias:
@@ -741,7 +741,7 @@ async delete(id) {
 
 ### Operadores e conexão:
 ```bash
-$ sudo docker exec -it mongodb_nodebr \
+$ sudo docker exec -it cursonodebr_mongodb \
     mongo -u lucasfranca -p lucasfranca --authenticationDatabase heroes
 > show dbs
 > use heroes
@@ -1709,7 +1709,7 @@ $ sudo npm install -g heroku
 
 ### Executando os comandos para subir o ambiente de produção:
 ```bash
---- In module-12/
+--- server/
 $ heroku login
 $ heroku apps:list
 $ heroku apps:create cursonodebr-study

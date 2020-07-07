@@ -2,9 +2,9 @@ version: "3"
 
 services:
   server:
-    container_name: server_nodebr
+    container_name: cursonodebr_server
     build:
-      context: ./module-12
+      context: ./server
       dockerfile: Dockerfile
     depends_on:
       - postgres
@@ -12,14 +12,14 @@ services:
     ports:
       - 3333:3333
     volumes:
-      - ./module-12:/usr/app
+      - ./server:/usr/app
       - /usr/app/node_modules
     env_file:
-      - ./module-12/config/.env.dev
-    command: sh -c "npm run test:dev"
+      - ./server/config/.env.dev
+    command: sh -c "npm t && npm run test:dev"
 
   postgres:
-    container_name: postgres_nodebr
+    container_name: cursonodebr_postgres
     image: postgres:alpine
     environment:
       POSTGRES_DB: heroes
@@ -28,16 +28,16 @@ services:
     ports: 
       - 5432:5432
 
-  adminer:
-    container_name: adminer_nodebr
-    image: adminer
-    ports:
-      - 8080:8080
-    links:
-      - postgres
+  # adminer:
+  #   container_name: cursonodebr_adminer
+  #   image: adminer
+  #   ports:
+  #     - 8080:8080
+  #   links:
+  #     - postgres
 
   mongodb:
-    container_name: mongodb_nodebr
+    container_name: cursonodebr_mongodb
     image: mongo:4
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -45,12 +45,12 @@ services:
     ports:
       - 27017:27017
 
-  mongoclient:
-    container_name: mongoclient_nodebr
-    image: mongoclient/mongoclient
-    ports:
-      - 3000:3000
-    depends_on:
-      - mongodb
-    links:
-      - mongodb
+  # mongoclient:
+  #   container_name: cursonodebr_mongoclient
+  #   image: mongoclient/mongoclient
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - mongodb
+  #   links:
+  #     - mongodb

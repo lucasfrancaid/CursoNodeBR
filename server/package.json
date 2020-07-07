@@ -1,0 +1,40 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/api/index.js",
+  "scripts": {
+    "postinstall": "cross-env NODE_ENV=prod npm t",
+    "test": "nyc --reporter=html mocha --timeout 10000 --exit src/tests/*test.js",
+    "test:dev": "nodemon --exec 'mocha --timeout 10000 src/tests/*test.js'",
+    "test:prod": "cross-env NODE_ENV=prod npm t",
+    "dev": "nodemon src/api",
+    "prod": "cross-env NODE_ENV=prod pm2-runtime src/api"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/boom": "^9.1.0",
+    "@hapi/hapi": "^19.1.1",
+    "@hapi/inert": "^6.0.1",
+    "@hapi/joi": "^17.1.1",
+    "@hapi/vision": "^6.0.0",
+    "bcrypt": "^5.0.0",
+    "cross-env": "^7.0.2",
+    "dotenv": "^8.2.0",
+    "hapi-auth-jwt2": "^10.1.0",
+    "hapi-swagger": "^13.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.21",
+    "pg": "^8.2.1",
+    "pg-hstore": "^2.3.3",
+    "pm2": "^4.4.0",
+    "sequelize": "^6.3.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.0.1",
+    "nodemon": "^2.0.4",
+    "nyc": "^15.1.0"
+  }
+}
