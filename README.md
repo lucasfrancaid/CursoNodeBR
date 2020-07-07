@@ -24,6 +24,12 @@
     <a href="https://cursonodebr-study.herokuapp.com/coverage/"><strong>https://cursonodebr-study.herokuapp.com/coverage/</strong></a>
 </p>
 
+<p align="center">
+    Saiba como executar este projeto em sua máquina local:
+    <br/>
+    <a href="./module-12/README.md"><strong>Documentação</strong></a>
+</p>
+
 ## 💻 Tecnologias:
 
 * [Node.js](https://nodejs.org/)
