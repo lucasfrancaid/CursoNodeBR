@@ -17,6 +17,9 @@
   <a href="#%EF%B8%8F-acessando-os-bancos-de-dados-mongodb-e-postgres-via-terminal">⌨️ Via terminal</a>
 </p>
 
+<br/>
+
+<br/>
 
 ## 🐳 Inicie com Docker-compose
 Para iniciar o App com Docker-compose (*Você precisa ter o Docker e o Docker-compose instalados para continuar. Caso contrário, você pode baixá-los através deste link: https://www.docker.com/*), em um terminal execute os seguintes comandos:
