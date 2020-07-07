@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="#-inicie-com-docker-compose">🐳 Inicie com Docker-compose</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-inicie-com-npm-e-docker-run">📦 Inicie com NPM e Docker Run</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-inicie-com-npm-e-docker-run">📦 Inicie com NPM e Docker</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-acessando-os-bancos-de-dados-mongodb-e-postgres-via-browser">💻 Acessando os BD's via browser</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-acessando-os-bancos-de-dados-mongodb-e-postgres-via-terminal">⌨️ Acessando os BD's via terminal</a>
 </p>
@@ -46,10 +46,10 @@ $ cd CursoNodeBR
 $ npm install
 ```
 
-### Inicie os bancos de dados com Docker Run:
+## Inicie os bancos de dados com Docker Run:
 Para iniciar o App com Docker (*Você precisa ter o Docker instalado para continuar. Caso contrário, você pode baixá-los através deste link: https://www.docker.com/*).
 
-### Postgres:
+Postgres:
 ```bash
 $ sudo docker run \
     --name postgres_nodebr \
@@ -61,7 +61,7 @@ $ sudo docker run \
     postgres
 ```
 
-### Adminer - Client para o Postgres
+Adminer - Client para o Postgres:
 ```bash
 $ sudo docker run \
     --name adminer_nodebr \
@@ -71,7 +71,7 @@ $ sudo docker run \
     adminer
 ```
 
-### MongoDB
+MongoDB:
 ```bash
 $ sudo docker run \
     --name mongodb_nodebr \
@@ -82,7 +82,7 @@ $ sudo docker run \
     mongo:4
 ```
 
-### Mongoclient - Client para o MongoDB
+Mongoclient - Client para o MongoDB:
 ```bash
 $ sudo docker run \
     --name mongoclient_nodebr \
@@ -94,10 +94,10 @@ $ sudo docker run \
 
 <br/>
 
-# 💻 Acessando os bancos de dados MongoDB e Postgres via browser
+## 💻 Acessando os bancos de dados MongoDB e Postgres via browser
 
-## Acessando o banco de dados MongoDB com mongoclient:
-*Antes de acessar o caminho do client, execute o seguinte comando no terminal para criar a db Heroes:*
+Acessando o banco de dados MongoDB com mongoclient:
+- *Antes de acessar o caminho do client, execute o seguinte comando no terminal para criar a db Heroes:*
 ```bash
 $ sudo docker exec -it mongodb_nodebr \
     mongo --host localhost -u admin -p admin --authenticationDatabase admin \
@@ -122,8 +122,10 @@ Authentication:
 ```
 - Salve a conexão, clique na conexão que foi criada e clique em connect
 
-## Acessando o banco de dados Postgres com Adminer:
-- Após executar o comando, acesse o <a href="http://localhost:8080">Adminer</a>
+<br/>
+
+Acessando o banco de dados Postgres com Adminer:
+- Acesse o <a href="http://localhost:8080">Adminer</a>
 *Atenção: Utilize CTRL+Clique (para abrir em outra aba)*
 - Faça o login com as seguintes configurações:
 ```txt
@@ -138,21 +140,19 @@ Authentication:
 
 ## ⌨️ Acessando os bancos de dados MongoDB e Postgres via terminal
 
-*OBS: Copie e cole os seguintes comandos em um novo terminal sem parar o docker-compose executado anteriormente*
-
-### Criando o banco de dados MongoDB:
+Criando o banco de dados MongoDB:
 ```bash
 $ sudo docker exec -it mongodb_nodebr \
     mongo --host localhost -u admin -p admin --authenticationDatabase admin \
     --eval "db.getSiblingDB('heroes').createUser({user: 'lucasfranca', pwd: 'lucasfranca', roles: [{role: 'readWrite', db: 'heroes'}]})"
 ```
 
-### Acessando o banco de dados do MongoDB:
+Acessando o banco de dados do MongoDB:
 ```bash
 $ sudo docker exec -it mongodb_nodebr \
     mongo -u lucasfranca -p lucasfranca --authenticationDatabase heroes
 ```
-### Criando dados no MongoDB:
+Criando Heróis no MongoDB:
 ```bash
 > use heroes
 > for (let i = 0; i <= 5; i++) {
@@ -167,14 +167,14 @@ $ sudo docker exec -it mongodb_nodebr \
 
 #
 
-### Acessando o banco de dados do Postgres:
+Acessando o banco de dados do Postgres:
 ```bash
 $ sudo docker exec -it postgres_nodebr \
     psql --host=postgres --dbname=heroes --username=lucasfranca
 ```
 *A senha é: lucasfranca*
 
-### Criando a tabela Heroes no Postgres:
+Criando a tabela Heroes no Postgres:
 ```bash
 DROP TABLE IF EXISTS TB_HEROES; 
 CREATE TABLE TB_HEROES (
@@ -184,7 +184,7 @@ CREATE TABLE TB_HEROES (
 );
 ```
 
-### Criando dados no Postgres:
+Criando Heróis no Postgres:
 ```bash
 INSERT INTO TB_HEROES (NAME, SKILL)
 VALUES
@@ -194,9 +194,9 @@ VALUES
 ```
 *Para sair do container use CTRL+d*
 
-#
+<br/>
 
-### Heróis criados em ambos bancos de dados, agora é hora de usar nossa aplicação, execute os seguintes comando em seu terminal:
+Heróis criados em ambos bancos de dados, agora é hora de usar nossa aplicação, execute os seguintes comando em seu terminal:
 ```bash
 $ sudo docker-compose stop
 $ sudo docker-compose up -d
