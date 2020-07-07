@@ -32,9 +32,9 @@ A partir desse momento, os contêineres Server, DB e Web serão iniciados, e o a
 - <b>Adminer (Client do Postgres):</b> http://localhost:8080/
 - <b>Mongoclient (Client do MongoDB):</b> http://localhost:3000/
 
-Mas a aplicação ainda não está funcionando, agora será necessário executar alguns comandos para acessarmos os bancos de dados e criar alguns itens, para isso, você pode seguir o passo a passo em um dos links abaixo: 
+Mas a aplicação ainda não está funcionando 100%, então agora será necessário executar alguns comandos para acessar os bancos de dados e criar alguns itens, para isso, você pode seguir o passo a passo em um dos links abaixo:
 - <a href="#-acessando-os-bancos-de-dados-mongodb-e-postgres-via-browser">💻 Acessando os BD's via browser</a>
-- <a href="#-acessando-os-bancos-de-dados-mongodb-e-postgres-via-terminal">⌨️ Acessando os BD's via terminal</a>
+- <a href="#%EF%B8%8F-acessando-os-bancos-de-dados-mongodb-e-postgres-via-terminal">⌨️ Acessando os BD's via terminal</a>
 
 <br/>
 
@@ -199,7 +199,7 @@ VALUES
 Heróis criados em ambos bancos de dados, agora é hora de usar nossa aplicação, execute os seguintes comando em seu terminal:
 ```bash
 $ sudo docker-compose stop
-$ sudo docker-compose up -d
+$ sudo docker-compose up
 ```
 
 *Os testes irão rodar e o dever deles é passar rsrs. Acesse a aplicação no seguinte caminho <a href="http://localhost:3333/documentation">http://localhost:3333/documentation</a> e seja feliz!*

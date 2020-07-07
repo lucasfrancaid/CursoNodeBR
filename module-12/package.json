@@ -6,9 +6,8 @@
   "scripts": {
     "postinstall": "cross-env NODE_ENV=prod npm t",
     "test": "nyc --reporter=html mocha --timeout 10000 --exit src/tests/*test.js",
-    "test:dev": "nodemon --exec 'mocha --timeout 10000 src/tests/*test.js'",
+    "test:watch": "mocha src/tests/*test.js -w",
     "test:prod": "cross-env NODE_ENV=prod npm t",
-    "dev": "nodemon src/api",
     "prod": "cross-env NODE_ENV=prod pm2-runtime src/api"
   },
   "keywords": [],
@@ -34,7 +33,6 @@
   },
   "devDependencies": {
     "mocha": "^8.0.1",
-    "nodemon": "^2.0.4",
     "nyc": "^15.1.0"
   }
 }
