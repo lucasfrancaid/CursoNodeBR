@@ -17,14 +17,15 @@ const USER_DB = {
 
 let app;
 
-describe('Auth test suite', function () {
-    this.beforeAll(async () => {
-        app = await api;
+describe('Suite of tests Auth Route', function () {
+    this.timeout(Infinity);
+    this.beforeAll(async function () {
+        app = await api
 
-        const connectionPostgres = await Postgres.connect()
-        const userSchema = await Postgres.defineModel(connectionPostgres, UserSchema)
-        const contextPostgres = new Context(new Postgres(connectionPostgres, userSchema))
-        await contextPostgres.update(null, USER_DB, true)
+        const connection = await Postgres.connect()
+        const model = await Postgres.defineModel(connection, UserSchema)
+        const context = new Context(new Postgres(connection, model))
+        await context.update(null, USER_DB, true)
     });
 
     it('Should get a token', async () => {

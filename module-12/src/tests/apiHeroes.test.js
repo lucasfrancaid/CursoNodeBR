@@ -11,7 +11,7 @@ const MOCK_HERO_UPDATE = {
     skill: 'Shield'
 };
 
-const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOjEsImlhdCI6MTU5MzkxNDQ1MX0.74BxqIbK5N9P0ma37F6uskYHgy7LrQYatF8Dx0g6Pjo'
+const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOjEsImlhdCI6MTU5NDA0MTA5OX0.Fa3cziLDW9x9sqndoVnCkAU6nRAgKqdraKadyWgrhG0'
 let MOCK_ID;
 let app;
 
@@ -21,9 +21,7 @@ const headers = {
 
 describe('Suite of tests API Heroes', function () {
     this.timeout(Infinity);
-    this.beforeAll(async () => {
-        app = await api
-    });
+    this.beforeAll(async () => app = await api);
 
     it('List - GET /heroes', async () => {
         const result = await app.inject({
@@ -64,22 +62,6 @@ describe('Suite of tests API Heroes', function () {
         assert.deepEqual(result.statusCode, 400)
     });
 
-    it('List - GET /heroes - should filter an item', async () => {
-        const LIMIT = 5
-        const NAME = 'Batman'
-        const result = await app.inject({
-            method: 'GET',
-            headers,
-            url: `/heroes?skip=0&limit=${LIMIT}&name=${NAME}`
-        })
-
-        const data = JSON.parse(result.payload)
-        const statusCode = result.statusCode
-
-        assert.deepEqual(statusCode, 200)
-        assert.deepEqual(data[0].name, NAME)
-    });
-
     it('Create - POST /heroes - should create a hero', async () => {
         const result = await app.inject({
             method: 'POST',
@@ -91,6 +73,22 @@ describe('Suite of tests API Heroes', function () {
         MOCK_ID = _id
         assert.ok(result.statusCode === 200)
         assert.deepEqual({ name, skill }, MOCK_HERO_CREATE)
+    });
+
+    it('List - GET /heroes - should filter an item', async () => {
+        const LIMIT = 1
+        const NAME = MOCK_HERO_CREATE.name
+        const result = await app.inject({
+            method: 'GET',
+            headers,
+            url: `/heroes?skip=0&limit=${LIMIT}&name=${NAME}`
+        })
+
+        const data = JSON.parse(result.payload)
+        const statusCode = result.statusCode
+
+        assert.deepEqual(statusCode, 200)
+        assert.deepEqual(data[0].name, NAME)
     });
 
     it('Update - PATCH /heroes/:id - should update a hero by id', async () => {
