@@ -14,7 +14,7 @@
   <a href="#-inicie-com-docker-compose">🐳 Inicie com Docker-compose</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-inicie-com-npm-e-docker-run">📦 Inicie com NPM e Docker</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-acessando-os-bancos-de-dados-mongodb-e-postgres-via-browser">💻 Acessando os BD's via browser</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-acessando-os-bancos-de-dados-mongodb-e-postgres-via-terminal">⌨️ Acessando os BD's via terminal</a>
+  <a href="#%EF%B8%8F-acessando-os-bancos-de-dados-mongodb-e-postgres-via-terminal">⌨️ Via terminal</a>
 </p>
 
 
